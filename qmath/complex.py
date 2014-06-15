@@ -5,6 +5,7 @@ Handles complex numbers
 '''
 
 from math import sqrt
+from math import sin, cos, atan, pi
 
 class Complex(object):
 
@@ -54,7 +55,7 @@ class Complex(object):
 
     def __truediv__(self, other):
         other = Complex(other)
-        dividend = other.getRealValue() ** 2 + other.getImaginaryValue() ** 2
+        dividend = other.getRealValue() ** 2.0 + other.getImaginaryValue() ** 2.0
         if dividend == 0:
             raise ZeroDivisionError("Can't divide a complex number by 0")
 
@@ -90,6 +91,25 @@ class Complex(object):
 
     def getImaginaryValue(self):
         return self.__value[1]
+
+    def setValueFromPolar(self, modulus, angle):
+        real = modulus * cos(angle)
+        imaginary = modulus * sin(angle)
+        self.setValue(real, imaginary)
+        return self
+
+    def getValueAsPolar(self):
+        a = self.getRealValue()
+        b = self.getImaginaryValue()
+        modulus = abs(self)
+        if a == 0:  # Angle in the Y axis
+            angle = pi / 2.0 if b >= 0 else 3 * pi / 2.0
+        else:
+            angle = atan(b / float(a))
+            if a < 0:  # Second and third quadrant
+                angle = angle + pi
+
+        return (modulus, angle)
 
     def conjugate(self):
         return Complex(self.getRealValue(), -self.getImaginaryValue())

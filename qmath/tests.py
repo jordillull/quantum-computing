@@ -93,6 +93,34 @@ class ComplexTest(unittest.TestCase):
         a = Complex(1, 2)
         self.assertEqual(a, a.conjugate().conjugate())
 
+    def testPolarRepresentation(self):
+        test_numbers = [
+                        Complex(0, 0),
+                        Complex(0, 1),
+                        Complex(0, -1),
+                        Complex(1, 0),
+                        Complex(0, 2.3),
+                        Complex(0, -2.7),
+                        Complex(4.3, 0),
+                        Complex(3.2, 0),
+                        Complex(2.4, -3.2),
+                        Complex(2.4, -3.2),
+                        Complex(-3.2, 3.8),
+                        Complex(-1.2, -2.6),
+                       ]
+
+        for cartesian in test_numbers:
+            polar = Complex().setValueFromPolar(cartesian.getValueAsPolar()[0], cartesian.getValueAsPolar()[1])
+
+            # We have to round the values due to the unavoidable loss of precision
+            c_a = round(cartesian.getRealValue(), 12)
+            c_b = round(cartesian.getImaginaryValue(), 12)
+            p_a = round(polar.getRealValue(), 12)
+            p_b = round(polar.getImaginaryValue(), 12)
+
+            self.assertEqual(c_a, p_a, "{0} is not equal to {1}".format(cartesian, polar))
+            self.assertEqual(c_b, p_b, "{0} is not equal to {1}".format(cartesian, polar))
+
     def testToString(self):
         self.assertEqual('0', str(Complex()))
         self.assertEqual('3', str(Complex(3)))
