@@ -45,6 +45,8 @@ class Complex(object):
     def __mul__(self, other):
         if isinstance(other, ComplexV):
             return other * self
+        elif isinstance(other, ComplexM):
+            return other * self
         else:
             other = Complex(other)
 
@@ -140,11 +142,11 @@ class ComplexV(object):
     Complex vectors manipulation
     """
     def __init__(self, numbers):
-        self.size = len(numbers)
-        self.elements = tuple(map(lambda x: Complex(x), numbers))
+        self.__size = len(numbers)
+        self.__elements = tuple(map(lambda x: Complex(x), numbers))
 
     def __str__(self):
-        return str(tuple(map(lambda x: x.toString(), self.elements)))
+        return str(tuple(map(lambda x: x.toString(), self.getElements())))
 
     def __add__(self, other):
         if isinstance(other, ComplexV):
@@ -180,7 +182,76 @@ class ComplexV(object):
         return ComplexV( tuple(neg_values) )
 
     def getElements(self):
-        return self.elements
+        return self.__elements
 
     def getSize(self):
-        return self.size
+        return self.__size
+
+class ComplexM(object):
+    """
+    Complex matrix manipulation
+    """
+    def __init__(self, m, n, matrix):
+        len_m = len(matrix)
+        len_n = [lx for lx in map(lambda x: len(x), matrix) if lx != n ]
+
+        if len_m != m or len_n != []:
+            if len_n != []:
+                len_n = len_n[0]
+            else:
+                len_n = n
+            raise ValueError("Expected a bidimensional array of length {0}x{1}. An array of {2}x{3} was given instead".format(m, n, len_m, len_n))
+
+        self.__size = (m,n)
+
+        my_mat = []
+        for row in matrix:
+            my_mat.append(tuple(map(lambda x: Complex(x), row)))
+
+        self.__matrix = tuple(my_mat)
+
+    def __str__(self):
+        string = ""
+
+        for row in self.getMatrix():
+            string = string + '| ' + "\t".join(map(lambda x: x.toString(), row)) + "\t|\n"
+
+        return string
+
+    def __add__(self, other):
+        if isinstance(other, ComplexM):
+            if self.getSize() != other.getSize():
+                raise ValueError("Can't sum ComplexM of size {0} with a ComplexM of size {1}".format('x'.join(self.getSize()), 'x'.join(other.getSize())))
+
+            new_values = tuple( map(lambda r1, r2: tuple( map(lambda x,y: x+y, r1,r2)), self.getMatrix(),other.getMatrix()) )
+            m,n = self.getSize()
+            return ComplexM(m,n, tuple(new_values))
+        else:
+            raise TypeError("Cannot sum a ComplexM with and object of class {0}".format(other.__class__.__name__))
+
+    def __eq__(self, other):
+        if self.getSize() != other.getSize():
+            return False
+
+        return self.getMatrix() == other.getMatrix()
+
+    def __mul__(self, other):
+        if isinstance(other, Complex): # Scalar multiplication
+            new_values = tuple( map(lambda i: tuple( map(lambda j: other * j, i)), self.getMatrix()) )
+            m,n = self.getSize()
+            return ComplexM(m,n, new_values)
+        elif isinstance(other, ComplexM):
+            raise NotImplemented("Not implemented yet. Coming Soon.")
+        else:
+            raise TypeError("Cannot sum a complex number with and object of class {0}".format(other.__class__.__name__))
+
+    def __neg__(self):
+        new_values = tuple( map(lambda i: tuple( map(lambda j: -j, i)), self.getMatrix()) )
+        m,n = self.getSize()
+        return ComplexM(m,n, new_values)
+
+    def getMatrix(self):
+        return self.__matrix
+
+    def getSize(self):
+        return self.__size

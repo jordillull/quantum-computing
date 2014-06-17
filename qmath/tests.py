@@ -5,7 +5,7 @@ Created on Jun 15, 2014
 '''
 import unittest
 
-from complex import Complex, ComplexV
+from complex import Complex, ComplexV, ComplexM
 from math import sqrt
 
 class ComplexTest(unittest.TestCase):
@@ -165,6 +165,56 @@ class ComplexVTest(unittest.TestCase):
     def testNegate(self):
         v = ComplexV([(1,2), (-1,-2), (4,-2.5)])
         w = ComplexV([(-1,-2), (1,2), (-4,2.5)])
+
+        self.assertEqual(w, -v)
+        self.assertEqual(v, -w)
+        self.assertNotEqual(v, -v)
+        self.assertNotEqual(w, -w)
+
+class ComplexMTest(unittest.TestCase):
+    def testConstruct(self):
+        values = [[(i,j) for i,j in zip(range(10),range(10))] for _ in range(7)]
+
+        v = ComplexM(7,10, values)
+        self.assertIsInstance(v, ComplexM)
+        self.assertEqual(v.getSize(), (7,10))
+
+        with self.assertRaises(ValueError):
+            ComplexM(10,7, values)
+
+    def testAdd(self):
+        v = ComplexM(3, 2, [ [(5,13), (6,2)], [(0.54,-6), 12], [3,0] ])
+        w = ComplexM(3, 2, [ [(7, -8), (0,4)], [2, (9.4,3)],  [(0,1), (-3,-2)] ])
+        res = ComplexM(3,2, [ [(12,5), (6,6)], [(2.54,-6), (21.4, 3)], [(3,1), (-3,-2)]])
+
+        self.assertEqual(res, v + w)
+        self.assertEqual(res, w + v)
+
+        vzero = ComplexM(3,2, [ [0,0], [0,0], [0,0] ])
+        self.assertEqual(v, vzero + v)
+        self.assertEqual(w, vzero + w)
+        self.assertEqual(v, v + vzero)
+        self.assertEqual(w, w + vzero)
+
+        with self.assertRaises(ValueError):
+            ComplexM(1,2, [[1], [2]]) + ComplexM(2,1, [1,2])
+
+    def testMul(self):
+        c1 = Complex(0, 2)
+        c2 = Complex(1, 2)
+        v  = ComplexM(2, 2, [ [(1, -1), 3], [(2,2), (4,1)] ])
+        res1 = ComplexM(2, 2, [ [(-2, 6), (-12, 6)], [(-12, -4), (-18,4)] ])
+        res2 = ComplexM(2, 2, [ [(5, 3), (3, 12)], [(-6, 10), (0,17)] ])
+
+        self.assertEqual(res1, c1*(c2 * v))
+        self.assertEqual(c1*(c2*v), c1*(c2 * v))
+
+        self.assertEqual(res2, (c1+c2) * v)
+        self.assertEqual((c1*v) + (c2*v), (c1+c2) * v)
+
+    def testNegate(self):
+        v = ComplexM(2, 2, [ [(2, -6), (12, -6)], [(12, 4), (18,-4)] ])
+        w = ComplexM(2, 2, [ [(-2, 6), (-12, 6)], [(-12, -4), (-18,4)] ])
 
         self.assertEqual(w, -v)
         self.assertEqual(v, -w)
