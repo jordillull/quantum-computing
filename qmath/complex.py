@@ -185,13 +185,34 @@ class ComplexM(object):
 
         return self.getMatrix() == other.getMatrix()
 
+    def __scalarmul__(self, other):
+        new_values = tuple( map(lambda i: tuple( map(lambda j: other * j, i)), self.getMatrix()) )
+        m,n = self.getSize()
+        return ComplexM(m,n, new_values)
+
+    def __matrixmul__(self, other):
+        sm, sn = self.getSize()
+        om, on = other.getSize()
+
+        if sm != on:
+            raise TypeError("Cannot multiply a ComplexM of size {0}x{1} with a ComplexM of size {2}x{3}".format(str(sm),str(sn),str(om),str(on)))
+
+        new_values = [[Complex(0) for _ in range(sm)] for _ in range(on)]
+
+        for i in range(sm):
+            for j in range(on):
+                for r1,r2 in zip(self.getRow(i), other.getCol(j)):
+                    new_values[i][j] += r1*r2
+
+        return ComplexM(sm, on, new_values)
+
+
+
     def __mul__(self, other):
         if isinstance(other, Complex): # Scalar multiplication
-            new_values = tuple( map(lambda i: tuple( map(lambda j: other * j, i)), self.getMatrix()) )
-            m,n = self.getSize()
-            return ComplexM(m,n, new_values)
+            return self.__scalarmul__(other)
         elif isinstance(other, ComplexM):
-            raise NotImplemented("Not implemented yet. Coming Soon.")
+            return self.__matrixmul__(other)
         else:
             raise TypeError("Cannot sum a complex number with and object of class {0}".format(other.__class__.__name__))
 
@@ -205,3 +226,29 @@ class ComplexM(object):
 
     def getSize(self):
         return self.__size
+
+    def conjugate(self):
+        new_values = tuple(map(lambda r: tuple(map(lambda x: x.conjugate(), r)), self.getMatrix()))
+        m,n = self.getSize()
+        return ComplexM(m,n,new_values)
+
+    def transpose(self):
+        m,n = self.getSize()
+        values = self.getMatrix()
+        new_values = [[0 for _ in range(m)] for _ in range(n)]
+
+        for i in range(m):
+            for j in range(n):
+                new_values[j][i] = values[i][j]
+
+        return ComplexM(n,m,new_values)
+
+    def adjoint(self):
+        return self.conjugate().transpose()
+
+    def getRow(self, i):
+        return self.getMatrix()[i]
+
+    def getCol(self, j):
+        return self.transpose().getMatrix()[j]
+

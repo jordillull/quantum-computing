@@ -149,7 +149,7 @@ class ComplexVTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             ComplexM(1, 3, [[(1,0),2,(3-1)]]) + ComplexM(1, 2, [[(1,0),2]])
 
-    def testMul(self):
+    def testScalarMul(self):
         c = Complex(8, -2)
         v = ComplexM(1, 4, [[(16,2.4), (0,-7), (6,0), (5, -4)]])
         res = ComplexM(1, 4, [[(132.8,-12.8), (-14,-56), (48,-12), (32,-42)]])
@@ -199,7 +199,7 @@ class ComplexMTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             ComplexM(1,2, [[1], [2]]) + ComplexM(2,1, [1,2])
 
-    def testMul(self):
+    def testScalarMul(self):
         c1 = Complex(0, 2)
         c2 = Complex(1, 2)
         v  = ComplexM(2, 2, [ [(1, -1), 3], [(2,2), (4,1)] ])
@@ -211,6 +211,94 @@ class ComplexMTest(unittest.TestCase):
 
         self.assertEqual(res2, (c1+c2) * v)
         self.assertEqual((c1*v) + (c2*v), (c1+c2) * v)
+
+    def testTranspose(self):
+        a = ComplexM(3, 2, [ [(7, -8), (0,4)], [2, (9.4,3)],  [(0,1), (-3,-2)] ])
+        b = ComplexM(2, 3, [ [(7, -8), 2, (0,1)], [(0,4), (9.4,3), (-3,-2)]])
+
+        self.assertEqual(b, a.transpose())
+        self.assertEqual(a, b.transpose())
+        self.assertEqual(a, a.transpose().transpose())
+        self.assertEqual(b, b.transpose().transpose())
+
+    def testConjugate(self):
+        a = ComplexM(3, 2, [ [(7, -8), (0,4)], [2, (9.4,3)],  [(0,1), (-3,-2)] ])
+        b = ComplexM(3, 2, [ [(7, 8), (0,-4)], [2, (9.4,-3)],  [(0,-1), (-3,2)] ])
+
+        self.assertEqual(b, a.conjugate())
+        self.assertEqual(a, b.conjugate())
+        self.assertEqual(a, a.conjugate().conjugate())
+        self.assertEqual(b, b.conjugate().conjugate())
+
+
+    def testMul_3x3(self):
+        a   = ComplexM(3,3,
+                [
+                  [(3,2)  , (0,0)   , (5,-6) ],
+                  [(1,0)  , (4,2)   , (0,1)  ],
+                  [(4,-1) , (0,0)   , (4,0)  ],
+                ]
+            )
+        b   = ComplexM(3,3,
+                [
+                  [(5,0)  , (2,-1)  , (6,-4) ],
+                  [(0,0)  , (4,5)   , (2,0)  ],
+                  [(7,-4) , (2,7)   , (0,0)  ],
+                ]
+            )
+        res = ComplexM(3,3,
+                [
+                  [(26,-52)  , (60,24)  , (26,0) ],
+                  [(9,7)    , (1,29)   , (14,0)  ],
+                  [(48,-21) , (15,22)  , (20,-22)  ],
+                ]
+            )
+
+        self.assertEqual(a*b, res)
+        self.assertNotEqual(b*a, a*b)
+
+        x = Complex(2,-1)
+        self.assertEqual(x * (a*b), (x*a) * b)
+        self.assertEqual(x * (a*b), a * (x*b))
+
+        c = res
+        self.assertEqual((a*b)*c, a*(b*c))
+        self.assertEqual(a*(b+c), (a*b)+(a*c))
+        self.assertEqual((a*b).transpose(), b.transpose() * a.transpose())
+        self.assertEqual((a*b).adjoint(), b.adjoint() * a.adjoint())
+        self.assertEqual((a*b).conjugate(), a.conjugate() * b.conjugate())
+
+    def testMul_2x3(self):
+        a   = ComplexM(2,3,
+                [
+                  [(3,2)  , (0,0)   , (5,-6) ],
+                  [(1,0)  , (4,2)   , (0,1)  ],
+                ]
+            )
+        b   = ComplexM(3,2,
+                [
+                  [(5,0)  , (2,-1)],
+                  [(0,0)  , (4,5)],
+                  [(7,-4) , (2,7)],
+                ]
+            )
+        res = ComplexM(2,2,
+                [
+                  [(26,-52)  , (60,24)],
+                  [(9,7)    , (1,29)],
+                ]
+            )
+
+        self.assertEqual(a*b, res)
+        self.assertNotEqual(b*a, a*b)
+
+        x = Complex(4,-3.5)
+        self.assertEqual(x * (a*b), (x*a) * b)
+        self.assertEqual(x * (a*b), a * (x*b))
+
+        self.assertEqual((a*b).transpose(), b.transpose() * a.transpose())
+        self.assertEqual((a*b).adjoint(), b.adjoint() * a.adjoint())
+        self.assertEqual((a*b).conjugate(), a.conjugate() * b.conjugate())
 
     def testNegate(self):
         v = ComplexM(2, 2, [ [(2, -6), (12, -6)], [(12, 4), (18,-4)] ])
