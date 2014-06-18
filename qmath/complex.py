@@ -43,9 +43,7 @@ class Complex(object):
         return self.__add__(-other)
 
     def __mul__(self, other):
-        if isinstance(other, ComplexV):
-            return other * self
-        elif isinstance(other, ComplexM):
+        if isinstance(other, ComplexM):
             return other * self
         else:
             other = Complex(other)
@@ -137,56 +135,6 @@ class Complex(object):
 
         return string
 
-class ComplexV(object):
-    """
-    Complex vectors manipulation
-    """
-    def __init__(self, numbers):
-        self.__size = len(numbers)
-        self.__elements = tuple(map(lambda x: Complex(x), numbers))
-
-    def __str__(self):
-        return str(tuple(map(lambda x: x.toString(), self.getElements())))
-
-    def __add__(self, other):
-        if isinstance(other, ComplexV):
-            if self.getSize() != other.getSize():
-                raise ValueError("Can't sum ComplexV of size {0} with a ComplexV of size {1}".format(self.getSize(), other.getSize()))
-
-            new_values = map(lambda x, y: x + y, self.getElements(), other.getElements())
-            return ComplexV( tuple(new_values) )
-        else:
-            raise TypeError("Cannot sum a complex number with and object of class {0}".format(other.__class__.__name__))
-
-    def __eq__(self, other):
-        if self.getSize() != other.getSize():
-            return False
-
-        for i,j in zip(self.getElements(), other.getElements()):
-            if i != j:
-                return False
-        return True
-
-    def __mul__(self, other):
-        if isinstance(other, Complex): # Scalar multiplication
-            other = Complex(other)
-            summed_values = map(lambda x: other * x, self.getElements())
-            return ComplexV( tuple(summed_values) )
-        elif isinstance(other, ComplexV):
-            raise NotImplemented("Not implemented yet. Coming Soon.")
-        else:
-            raise TypeError("Cannot sum a complex number with and object of class {0}".format(other.__class__.__name__))
-
-    def __neg__(self):
-        neg_values = map(lambda x: -x, self.getElements())
-        return ComplexV( tuple(neg_values) )
-
-    def getElements(self):
-        return self.__elements
-
-    def getSize(self):
-        return self.__size
-
 class ComplexM(object):
     """
     Complex matrix manipulation
@@ -221,7 +169,9 @@ class ComplexM(object):
     def __add__(self, other):
         if isinstance(other, ComplexM):
             if self.getSize() != other.getSize():
-                raise ValueError("Can't sum ComplexM of size {0} with a ComplexM of size {1}".format('x'.join(self.getSize()), 'x'.join(other.getSize())))
+                self_size = 'x'.join(map(lambda x: str(x), self.getSize()))
+                other_size = 'x'.join(map(lambda x: str(x), other.getSize()))
+                raise ValueError("Can't sum ComplexM of size {0} with a ComplexM of size {1}".format(self_size, other_size))
 
             new_values = tuple( map(lambda r1, r2: tuple( map(lambda x,y: x+y, r1,r2)), self.getMatrix(),other.getMatrix()) )
             m,n = self.getSize()

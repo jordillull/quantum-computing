@@ -5,7 +5,7 @@ Created on Jun 15, 2014
 '''
 import unittest
 
-from complex import Complex, ComplexV, ComplexM
+from complex import Complex, ComplexM
 from math import sqrt
 
 class ComplexTest(unittest.TestCase):
@@ -134,37 +134,37 @@ class ComplexTest(unittest.TestCase):
 
 class ComplexVTest(unittest.TestCase):
     def testAdd(self):
-        v = ComplexV([(5,13), (6,2), (0.54,-6), 12])
-        w = ComplexV([(7, -8), (0,4), 2, (9.4,3)])
-        res = ComplexV([(12,5), (6,6), (2.54,-6), (21.4, 3)])
+        v = ComplexM(1, 4, [[(5,13), (6,2), (0.54,-6), 12]])
+        w = ComplexM(1, 4, [[(7, -8), (0,4), 2, (9.4,3)]])
+        res = ComplexM(1, 4, [[(12,5), (6,6), (2.54,-6), (21.4, 3)]])
 
         self.assertEqual(res, v + w)
 
-        vzero = ComplexV([0, 0, 0, 0])
+        vzero = ComplexM(1, 4, [[0, 0, 0, 0]])
         self.assertEqual(v, vzero + v)
         self.assertEqual(w, vzero + w)
         self.assertEqual(v, v + vzero)
         self.assertEqual(w, w + vzero)
 
         with self.assertRaises(ValueError):
-            ComplexV([1,2,3]) + ComplexV([1,2])
+            ComplexM(1, 3, [[(1,0),2,(3-1)]]) + ComplexM(1, 2, [[(1,0),2]])
 
     def testMul(self):
         c = Complex(8, -2)
-        v = ComplexV([(16,2.4), (0,-7), (6,0), (5, -4)])
-        res = ComplexV([(132.8,-12.8), (-14,-56), (48,-12), (32,-42)])
+        v = ComplexM(1, 4, [[(16,2.4), (0,-7), (6,0), (5, -4)]])
+        res = ComplexM(1, 4, [[(132.8,-12.8), (-14,-56), (48,-12), (32,-42)]])
         self.assertEqual(res, c * v)
         self.assertEqual(v, Complex(1) * v)
 
     def testComparison(self):
-        self.assertEqual( ComplexV([1,2]), ComplexV((1,2)) )
-        self.assertEqual( ComplexV([Complex(1,2), Complex(3,4)]), ComplexV([(1,2), (3,4)]) )
-        self.assertNotEqual(ComplexV([1,2]), ComplexV([(1,2)]) )
-        self.assertNotEqual(ComplexV([1,2]), ComplexV([(1,-1),(2,-1)]) )
+        self.assertEqual( ComplexM(1, 1, [[(1,2)]]), ComplexM(1, 1, [[(1,2)]]) )
+        self.assertEqual( ComplexM(1, 2, [[Complex(1,2), Complex(3,4)]]), ComplexM(1, 2, [[(1,2), (3,4)]]) )
+        self.assertNotEqual(ComplexM(1, 2, [[1,2]]), ComplexM(1, 1, [[(1,2)]]) )
+        self.assertNotEqual(ComplexM(1, 2, [[1,2]]), ComplexM(1, 2, [[(1,-1),(2,-1)]]) )
 
     def testNegate(self):
-        v = ComplexV([(1,2), (-1,-2), (4,-2.5)])
-        w = ComplexV([(-1,-2), (1,2), (-4,2.5)])
+        v = ComplexM(1, 3, [[(1,2), (-1,-2), (4,-2.5)]])
+        w = ComplexM(1, 3, [[(-1,-2), (1,2), (-4,2.5)]])
 
         self.assertEqual(w, -v)
         self.assertEqual(v, -w)
