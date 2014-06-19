@@ -246,6 +246,13 @@ class ComplexM(object):
     def adjoint(self):
         return self.conjugate().transpose()
 
+    def getIdentity(self):
+        m, n = self.getSize()
+        if m != n:
+            return None
+        values = [[1 if i == j else 0 for i in range(m)] for j in range(n)]
+        return ComplexM(m, n, values)
+
     def getRow(self, i):
         return self.getMatrix()[i]
 

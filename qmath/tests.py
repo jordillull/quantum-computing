@@ -257,6 +257,10 @@ class ComplexMTest(unittest.TestCase):
         self.assertEqual(a*b, res)
         self.assertNotEqual(b*a, a*b)
 
+        ident = a.getIdentity()
+        self.assertEqual(a, a*ident)
+        self.assertEqual(b, b*ident)
+
         x = Complex(2,-1)
         self.assertEqual(x * (a*b), (x*a) * b)
         self.assertEqual(x * (a*b), a * (x*b))
@@ -291,6 +295,10 @@ class ComplexMTest(unittest.TestCase):
 
         self.assertEqual(a*b, res)
         self.assertNotEqual(b*a, a*b)
+
+        self.assertIsNone(a.getIdentity())
+        self.assertIsNone(b.getIdentity())
+        self.assertIsNotNone(res.getIdentity())
 
         x = Complex(4,-3.5)
         self.assertEqual(x * (a*b), (x*a) * b)
