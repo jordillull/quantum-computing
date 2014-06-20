@@ -6,6 +6,7 @@ Handles complex numbers
 
 from math import sqrt
 from math import sin, cos, atan, pi
+from prettytable import PrettyTable
 
 class Complex(object):
 
@@ -159,12 +160,7 @@ class ComplexM(object):
         self.__matrix = tuple(my_mat)
 
     def __str__(self):
-        string = ""
-
-        for row in self.getMatrix():
-            string = string + '| ' + "\t".join(map(lambda x: x.toString(), row)) + "\t|\n"
-
-        return string
+        return self.toString()
 
     def __add__(self, other):
         if isinstance(other, ComplexM):
@@ -259,3 +255,10 @@ class ComplexM(object):
     def getCol(self, j):
         return self.transpose().getMatrix()[j]
 
+    def toString(self):
+        t = PrettyTable(header=False)
+
+        for row in self.getMatrix():
+            t.add_row(row)
+
+        return str(t)
