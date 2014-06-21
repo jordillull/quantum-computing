@@ -189,6 +189,22 @@ class ComplexMTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             ComplexM(10,7, values)
 
+    def testGetelement(self):
+        a = ComplexM(3, 2, [ [(5, 13), (6, 2)], [(0.54, -6), 12], [3, 0] ])
+
+        self.assertEqual(a[0][0], Complex(5, 13))
+        self.assertEqual(a[0][1], Complex(6,2))
+        self.assertEqual(a[1][0], Complex(0.54,-6))
+        self.assertEqual(a[1][1], Complex(12,0))
+        self.assertEqual(a[2][0], Complex(3,0))
+        self.assertEqual(a[2][1], Complex(0,0))
+
+        with self.assertRaises(IndexError):
+            a[3][1]
+
+        with self.assertRaises(IndexError):
+            a[1][3]
+
     def testAdd(self):
         a = ComplexM(3, 2, [ [(5,13), (6,2)], [(0.54,-6), 12], [3,0] ])
         b = ComplexM(3, 2, [ [(7, -8), (0,4)], [2, (9.4,3)],  [(0,1), (-3,-2)] ])
@@ -323,6 +339,10 @@ class ComplexMTest(unittest.TestCase):
         self.assertEqual(a, -b)
         self.assertNotEqual(a, -a)
         self.assertNotEqual(b, -b)
+
+    def testToString(self):
+        a = ComplexM(2, 2, [ [(2, -6), (12, -6)], [(12, 4), (18, -4)] ])
+        str(a)
 
 if __name__ == "__main__":
     unittest.main()

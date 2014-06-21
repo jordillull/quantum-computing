@@ -169,7 +169,7 @@ class ComplexM(object):
                 other_size = 'x'.join(map(lambda x: str(x), other.getSize()))
                 raise ValueError("Can't sum ComplexM of size {0} with a ComplexM of size {1}".format(self_size, other_size))
 
-            new_values = tuple( map(lambda r1, r2: tuple( map(lambda x,y: x+y, r1,r2)), self.getMatrix(),other.getMatrix()) )
+            new_values = tuple(map(lambda r1, r2: tuple(map(lambda x, y: x + y, r1, r2)), self, other))
             m,n = self.getSize()
             return ComplexM(m,n, tuple(new_values))
         else:
@@ -182,7 +182,7 @@ class ComplexM(object):
         return self.getMatrix() == other.getMatrix()
 
     def __scalarmul__(self, other):
-        new_values = tuple( map(lambda i: tuple( map(lambda j: other * j, i)), self.getMatrix()) )
+        new_values = tuple(map(lambda i: tuple(map(lambda j: other * j, i)), self))
         m,n = self.getSize()
         return ComplexM(m,n, new_values)
 
@@ -213,9 +213,12 @@ class ComplexM(object):
             raise TypeError("Cannot sum a complex number with and object of class {0}".format(other.__class__.__name__))
 
     def __neg__(self):
-        new_values = tuple( map(lambda i: tuple( map(lambda j: -j, i)), self.getMatrix()) )
+        new_values = tuple(map(lambda i: tuple(map(lambda j:-j, i)), self))
         m,n = self.getSize()
         return ComplexM(m,n, new_values)
+
+    def __getitem__(self, i):
+        return self.getMatrix()[i]
 
     def getMatrix(self):
         return self.__matrix
@@ -224,18 +227,13 @@ class ComplexM(object):
         return self.__size
 
     def conjugate(self):
-        new_values = tuple(map(lambda r: tuple(map(lambda x: x.conjugate(), r)), self.getMatrix()))
+        new_values = tuple(map(lambda r: tuple(map(lambda x: x.conjugate(), r)), self))
         m,n = self.getSize()
         return ComplexM(m,n,new_values)
 
     def transpose(self):
         m,n = self.getSize()
-        values = self.getMatrix()
-        new_values = [[0 for _ in range(m)] for _ in range(n)]
-
-        for i in range(m):
-            for j in range(n):
-                new_values[j][i] = values[i][j]
+        new_values = [[self[j][i] for j in range(m)] for i in range(n)]
 
         return ComplexM(n,m,new_values)
 
@@ -253,15 +251,15 @@ class ComplexM(object):
         return ComplexM(m, n, values)
 
     def getRow(self, i):
-        return self.getMatrix()[i]
+        return self[i]
 
     def getCol(self, j):
-        return self.transpose().getMatrix()[j]
+        return self.transpose()[j]
 
     def toString(self):
         t = PrettyTable(header=False)
 
-        for row in self.getMatrix():
+        for row in self:
             t.add_row(row)
 
         return str(t)
