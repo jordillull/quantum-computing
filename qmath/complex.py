@@ -242,6 +242,9 @@ class ComplexM(object):
     def adjoint(self):
         return self.conjugate().transpose()
 
+    def isVector(self):
+        return self.getSize()[1] == 1
+
     def getIdentity(self):
         m, n = self.getSize()
         if m != n:

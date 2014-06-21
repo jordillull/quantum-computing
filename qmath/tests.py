@@ -134,13 +134,13 @@ class ComplexTest(unittest.TestCase):
 
 class ComplexVTest(unittest.TestCase):
     def testAdd(self):
-        v = ComplexM(1, 4, [[(5,13), (6,2), (0.54,-6), 12]])
-        w = ComplexM(1, 4, [[(7, -8), (0,4), 2, (9.4,3)]])
-        res = ComplexM(1, 4, [[(12,5), (6,6), (2.54,-6), (21.4, 3)]])
+        v = ComplexM(4, 1, [[(5, 13)], [(6, 2)], [(0.54, -6)], [12]])
+        w = ComplexM(4, 1, [[(7, -8)], [(0, 4)], [2], [(9.4, 3)]])
+        res = ComplexM(4, 1, [[(12, 5)], [(6, 6)], [(2.54, -6)], [(21.4, 3)]])
 
         self.assertEqual(res, v + w)
 
-        vzero = ComplexM(1, 4, [[0, 0, 0, 0]])
+        vzero = ComplexM(4, 1, [[0], [0], [0], [0]])
         self.assertEqual(v, vzero + v)
         self.assertEqual(w, vzero + w)
         self.assertEqual(v, v + vzero)
@@ -151,50 +151,57 @@ class ComplexVTest(unittest.TestCase):
 
     def testScalarMul(self):
         c = Complex(8, -2)
-        v = ComplexM(1, 4, [[(16,2.4), (0,-7), (6,0), (5, -4)]])
-        res = ComplexM(1, 4, [[(132.8,-12.8), (-14,-56), (48,-12), (32,-42)]])
+        v = ComplexM(4, 1, [[(16, 2.4)], [(0, -7)], [(6, 0)], [(5, -4)]])
+        res = ComplexM(4, 1, [[(132.8, -12.8)], [(-14, -56)], [(48, -12)], [(32, -42)]])
         self.assertEqual(res, c * v)
         self.assertEqual(v, Complex(1) * v)
 
     def testComparison(self):
         self.assertEqual( ComplexM(1, 1, [[(1,2)]]), ComplexM(1, 1, [[(1,2)]]) )
-        self.assertEqual( ComplexM(1, 2, [[Complex(1,2), Complex(3,4)]]), ComplexM(1, 2, [[(1,2), (3,4)]]) )
-        self.assertNotEqual(ComplexM(1, 2, [[1,2]]), ComplexM(1, 1, [[(1,2)]]) )
-        self.assertNotEqual(ComplexM(1, 2, [[1,2]]), ComplexM(1, 2, [[(1,-1),(2,-1)]]) )
+        self.assertEqual(ComplexM(2, 1, [[Complex(1, 2)], [Complex(3, 4)]]), ComplexM(2, 1, [[(1, 2)], [(3, 4)]]))
+        self.assertNotEqual(ComplexM(2, 1, [[1], [2]]), ComplexM(1, 1, [[(1, 2)]]))
+        self.assertNotEqual(ComplexM(2, 1, [[1], [2]]), ComplexM(1, 2, [[(1, -1), (2, -1)]]))
 
     def testNegate(self):
-        v = ComplexM(1, 3, [[(1,2), (-1,-2), (4,-2.5)]])
-        w = ComplexM(1, 3, [[(-1,-2), (1,2), (-4,2.5)]])
+        v = ComplexM(3, 1, [[(1, 2)], [(-1, -2)], [(4, -2.5)]])
+        w = ComplexM(3, 1, [[(-1, -2)], [(1, 2)], [(-4, 2.5)]])
 
         self.assertEqual(w, -v)
         self.assertEqual(v, -w)
         self.assertNotEqual(v, -v)
         self.assertNotEqual(w, -w)
 
+    def testIsVector(self):
+        v = ComplexM(3, 1, [[(-1, -2)], [(1, 2)], [(-4, 2.5)]])
+        a = ComplexM(1, 3, [[(-1, -2), (1, 2), (-4, 2.5)]])
+
+        self.assertTrue(v.isVector())
+        self.assertFalse(a.isVector())
+
 class ComplexMTest(unittest.TestCase):
     def testConstruct(self):
         values = [[(i,j) for i,j in zip(range(10),range(10))] for _ in range(7)]
 
-        v = ComplexM(7,10, values)
-        self.assertIsInstance(v, ComplexM)
-        self.assertEqual(v.getSize(), (7,10))
+        a = ComplexM(7,10, values)
+        self.assertIsInstance(a, ComplexM)
+        self.assertEqual(a.getSize(), (7,10))
 
         with self.assertRaises(ValueError):
             ComplexM(10,7, values)
 
     def testAdd(self):
-        v = ComplexM(3, 2, [ [(5,13), (6,2)], [(0.54,-6), 12], [3,0] ])
-        w = ComplexM(3, 2, [ [(7, -8), (0,4)], [2, (9.4,3)],  [(0,1), (-3,-2)] ])
+        a = ComplexM(3, 2, [ [(5,13), (6,2)], [(0.54,-6), 12], [3,0] ])
+        b = ComplexM(3, 2, [ [(7, -8), (0,4)], [2, (9.4,3)],  [(0,1), (-3,-2)] ])
         res = ComplexM(3,2, [ [(12,5), (6,6)], [(2.54,-6), (21.4, 3)], [(3,1), (-3,-2)]])
 
-        self.assertEqual(res, v + w)
-        self.assertEqual(res, w + v)
+        self.assertEqual(res, a + b)
+        self.assertEqual(res, b + a)
 
-        vzero = ComplexM(3,2, [ [0,0], [0,0], [0,0] ])
-        self.assertEqual(v, vzero + v)
-        self.assertEqual(w, vzero + w)
-        self.assertEqual(v, v + vzero)
-        self.assertEqual(w, w + vzero)
+        azero = ComplexM(3,2, [ [0,0], [0,0], [0,0] ])
+        self.assertEqual(a, azero + a)
+        self.assertEqual(b, azero + b)
+        self.assertEqual(a, a + azero)
+        self.assertEqual(b, b + azero)
 
         with self.assertRaises(ValueError):
             ComplexM(1,2, [[1], [2]]) + ComplexM(2,1, [1,2])
@@ -202,15 +209,15 @@ class ComplexMTest(unittest.TestCase):
     def testScalarMul(self):
         c1 = Complex(0, 2)
         c2 = Complex(1, 2)
-        v  = ComplexM(2, 2, [ [(1, -1), 3], [(2,2), (4,1)] ])
+        a  = ComplexM(2, 2, [ [(1, -1), 3], [(2,2), (4,1)] ])
         res1 = ComplexM(2, 2, [ [(-2, 6), (-12, 6)], [(-12, -4), (-18,4)] ])
         res2 = ComplexM(2, 2, [ [(5, 3), (3, 12)], [(-6, 10), (0,17)] ])
 
-        self.assertEqual(res1, c1*(c2 * v))
-        self.assertEqual(c1*(c2*v), c1*(c2 * v))
+        self.assertEqual(res1, c1*(c2 * a))
+        self.assertEqual(c1*(c2*a), c1*(c2 * a))
 
-        self.assertEqual(res2, (c1+c2) * v)
-        self.assertEqual((c1*v) + (c2*v), (c1+c2) * v)
+        self.assertEqual(res2, (c1+c2) * a)
+        self.assertEqual((c1*a) + (c2*a), (c1+c2) * a)
 
     def testTranspose(self):
         a = ComplexM(3, 2, [ [(7, -8), (0,4)], [2, (9.4,3)],  [(0,1), (-3,-2)] ])
@@ -309,13 +316,13 @@ class ComplexMTest(unittest.TestCase):
         self.assertEqual((a*b).conjugate(), a.conjugate() * b.conjugate())
 
     def testNegate(self):
-        v = ComplexM(2, 2, [ [(2, -6), (12, -6)], [(12, 4), (18,-4)] ])
-        w = ComplexM(2, 2, [ [(-2, 6), (-12, 6)], [(-12, -4), (-18,4)] ])
+        a = ComplexM(2, 2, [ [(2, -6), (12, -6)], [(12, 4), (18,-4)] ])
+        b = ComplexM(2, 2, [ [(-2, 6), (-12, 6)], [(-12, -4), (-18,4)] ])
 
-        self.assertEqual(w, -v)
-        self.assertEqual(v, -w)
-        self.assertNotEqual(v, -v)
-        self.assertNotEqual(w, -w)
+        self.assertEqual(b, -a)
+        self.assertEqual(a, -b)
+        self.assertNotEqual(a, -a)
+        self.assertNotEqual(b, -b)
 
 if __name__ == "__main__":
     unittest.main()
