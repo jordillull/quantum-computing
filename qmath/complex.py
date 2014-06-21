@@ -277,6 +277,26 @@ class ComplexM(object):
     def distance(self, other):
         return (self - other).norm()
 
+    def tensor(self, other):
+        (sm, sn) = self.getSize()
+        (om, on) = other.getSize()
+        # We are using the formal definition of Tensor here. I.e:
+        #     Being size of A m×m' and size of B n×n'
+        #     (A ⊗ B)[i, j] = A[i/m, j/n] * B[i % m, j % n]
+        tensorFnx = lambda i, j: self[i // om][j // sn] * other[i % om][j % sn]
+        tensor_size = (sm * om, sn * on)
+        tensor_matrix = [[tensorFnx(i, j) for j in range(tensor_size[1])] for i in range(tensor_size[0])]
+
+        return ComplexM(tensor_size[0], tensor_size[1], tensor_matrix)
+
+    def isHermitian(self):
+        return self.isSquared() and self.adjoint() == self
+
+    def isUnitary(self):
+        if not self.isSquared():
+            return False
+        return self * self.adjoint() == self.getIdentity()
+
     def getIdentity(self):
         m, n = self.getSize()
         if m != n:
