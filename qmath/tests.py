@@ -364,8 +364,9 @@ class ComplexMTest(unittest.TestCase):
         self.assertIsInstance(v1.innerProduct(v2), Complex)
         # v ≠ 0 → ⟨v, v⟩ > 0
         self.assertGreater(v1.innerProduct(v1).getRealValue(), 0)
+        self.assertEqual(v1.innerProduct(v1).getImaginaryValue(), 0)
         # ⟨v1, v2⟩ = 0 ↔ v = 0
-        self.assertEqual(vz.innerProduct(vz), Complex(0, 0))
+        self.assertEqual(vz.innerProduct(vz), Complex(0))
         # ⟨v1+v2, v3⟩ = ⟨v1, v3⟩ + ⟨v2, v3⟩
         self.assertEqual((v1 + v2).innerProduct(v3), v1.innerProduct(v3) + v2.innerProduct(v3))
         # ⟨v1, v2+v3⟩ = ⟨v1, v2⟩ + ⟨v1, v3⟩
@@ -382,6 +383,45 @@ class ComplexMTest(unittest.TestCase):
         self.assertTrue(a.isSquared())
         b = ComplexM(4,5, a[0:4])
         self.assertFalse(b.isSquared())
+
+    def testNorm(self):
+        v1 = ComplexM(4, 1, [ [(4, 3)], [(6,-4)], [(12,-7)], [(0,13)]])
+        v2 = ComplexM(4, 1, [ [(2, 3)], [(2,-4)], [(1,-7)], [(3,13)]])
+
+        self.assertEqual(v1.norm(), sqrt(439))
+        self.assertGreater(v2.norm(), 0)
+        self.assertLess((v1 + v2).norm(), v1.norm() + v2.norm())
+
+        a = ComplexM(2, 2, [ [(3, 0), (5, 0)], [(2, 0), (3, 0)] ])
+
+        self.assertEqual(a.norm(), sqrt(47))
+
+        b = ComplexM(3, 2, [ [(3, 0), (5, 0)], [(2, 0), (3, 0)], [(4,0), (5,0)] ])
+        with self.assertRaises(ValueError):
+            b.norm()
+
+    def testDistance(self):
+        v1 = ComplexM(3,1, [ [3], [1], [2] ])
+        v2 = ComplexM(3,1, [ [2], [2], [-1] ])
+        v3 = ComplexM(3,1, [ [4], [2], [-3] ])
+
+        self.assertEqual(v1.distance(v2), sqrt(11))
+        self.assertEqual(v1.distance(v1), 0)
+        self.assertEqual(v2.distance(v2), 0)
+        self.assertLess(v1.distance(v3), v1.distance(v2) + v1.distance(v3))
+        self.assertEqual(v1.distance(v2), v2.distance(v1))
+
+        with self.assertRaises(TypeError):
+            v1.distance('foo')
+
+        v4 = ComplexM(4,1, [ [4], [0], [-3], [-1] ])
+        with self.assertRaises(ValueError):
+            v1.distance(v4)
+
+        a = ComplexM(3, 2, [ [(7, 8), (0,-4)], [2, (9.4,-3)],  [(0,-1), (-3,2)] ])
+        b = ComplexM(3, 2, [ [(7, 8), (0,-4)], [2, (9.4,-3)],  [(0,-1), (-3,2)] ])
+        with self.assertRaises(ValueError):
+            a.distance(b)
 
     def testToString(self):
         a = ComplexM(2, 2, [ [(2, -6), (12, -6)], [(12, 4), (18, -4)] ])

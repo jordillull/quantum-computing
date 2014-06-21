@@ -175,6 +175,9 @@ class ComplexM(object):
         else:
             raise TypeError("Cannot sum a ComplexM with and object of class {0}".format(other.__class__.__name__))
 
+    def __sub__(self, other):
+        return self.__add__(-other)
+
     def __eq__(self, other):
         if self.getSize() != other.getSize():
             return False
@@ -222,7 +225,7 @@ class ComplexM(object):
 
     def innerProduct(self, other):
         if not isinstance(other, ComplexM):
-            raise TypeError("Cannot do the innerproduct of ComplexM with and ootherject of class {0}".format(other.__class__.__name__))
+            raise TypeError("Cannot do the innerproduct of ComplexM with an object of class {0}".format(other.__class__.__name__))
 
         if self.isVector() and other.isVector():
             return (self.adjoint() * other).trace()
@@ -231,7 +234,7 @@ class ComplexM(object):
         else:
             self_size = 'x'.join(map(lambda x: str(x), self.getSize()))
             other_size = 'x'.join(map(lambda x : str(x), other.getSize()))
-            raise ValueError("Cannot do the innerproduct of a ComplexM of size {0} with a ComplexM of size {1}".format(self_size, other_size))
+            raise ValueError("Cannot do the innerproduct of a ComplexM of size {0} with a ComplexM of size {1}".format(self_size, other_size)) 
 
     def getMatrix(self):
         return self.__matrix
@@ -268,6 +271,11 @@ class ComplexM(object):
 
         return res
 
+    def norm(self):
+        return sqrt(self.innerProduct(self).getRealValue())
+
+    def distance(self, other):
+        return (self - other).norm()
 
     def getIdentity(self):
         m, n = self.getSize()
