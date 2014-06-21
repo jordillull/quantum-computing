@@ -220,6 +220,19 @@ class ComplexM(object):
     def __getitem__(self, i):
         return self.getMatrix()[i]
 
+    def innerProduct(self, other):
+        if not isinstance(other, ComplexM):
+            raise TypeError("Cannot do the innerproduct of ComplexM with and ootherject of class {0}".format(other.__class__.__name__))
+
+        if self.isVector() and other.isVector():
+            return (self.adjoint() * other).trace()
+        elif self.isSquared() and other.isSquared() and self.getSize()[0] == other.getSize()[0]:
+            return (self.transpose() * other).trace()
+        else:
+            self_size = 'x'.join(map(lambda x: str(x), self.getSize()))
+            other_size = 'x'.join(map(lambda x : str(x), other.getSize()))
+            raise ValueError("Cannot do the innerproduct of a ComplexM of size {0} with a ComplexM of size {1}".format(self_size, other_size))
+
     def getMatrix(self):
         return self.__matrix
 
@@ -242,6 +255,19 @@ class ComplexM(object):
 
     def isVector(self):
         return self.getSize()[1] == 1
+
+    def isSquared(self):
+        return self.getSize()[0] == self.getSize()[1]
+
+    def trace(self):
+        if not self.isSquared():
+            raise ValueError("A matrix of size {0}x{1} is not an squared matrix".format(str(self.getSize()[0]), str(self.getSize()[1])))
+        res = Complex(0)
+        for i in range(self.getSize()[0]):
+            res += self[i][i]
+
+        return res
+
 
     def getIdentity(self):
         m, n = self.getSize()

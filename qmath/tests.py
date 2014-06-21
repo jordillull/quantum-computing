@@ -340,6 +340,49 @@ class ComplexMTest(unittest.TestCase):
         self.assertNotEqual(a, -a)
         self.assertNotEqual(b, -b)
 
+    def testTrace(self):
+        a = ComplexM(3, 3,
+                [
+                  [(3, 2)  , (0, 0)   , (5, -6) ],
+                  [(1, 0)  , (-7, 2)   , (0, 1)  ],
+                  [(1, 0)  , (4, 2)   , (1, -3.5)  ],
+                ]
+            )
+        self.assertEqual(a.trace(), Complex(-3, 0.5))
+
+        b = ComplexM(2, 3, a[0:2])
+        with self.assertRaises(ValueError):
+            b.trace()
+
+    def testVectorInnerProduct(self):
+        v1 = ComplexM(3, 1, [[(2, -5)], [(1, 0)], [(3, 1)]])
+        v2 = ComplexM(3, 1, [[(2, 1)], [(2, 3)], [(4, 14)]])
+        v3 = ComplexM(3, 1, [[(0, -2)], [(-1, 0)], [(2, -3)]])
+        c  = Complex(3, 3)
+        vz = ComplexM(3, 1, [[0], [0], [0]])
+
+        self.assertIsInstance(v1.innerProduct(v2), Complex)
+        # v ≠ 0 → ⟨v, v⟩ > 0
+        self.assertGreater(v1.innerProduct(v1).getRealValue(), 0)
+        # ⟨v1, v2⟩ = 0 ↔ v = 0
+        self.assertEqual(vz.innerProduct(vz), Complex(0, 0))
+        # ⟨v1+v2, v3⟩ = ⟨v1, v3⟩ + ⟨v2, v3⟩
+        self.assertEqual((v1 + v2).innerProduct(v3), v1.innerProduct(v3) + v2.innerProduct(v3))
+        # ⟨v1, v2+v3⟩ = ⟨v1, v2⟩ + ⟨v1, v3⟩
+        self.assertEqual(v1.innerProduct(v2 + v3), v1.innerProduct(v2) + v1.innerProduct(v3))
+        # ⟨c v1, v2⟩ = conj(c) ⟨v1, v2⟩
+        self.assertEqual((v1 * c).innerProduct(v2), c.conjugate() * v1.innerProduct(v2))
+        # ⟨v1, c v2⟩ = c ⟨v2, v1⟩
+        self.assertEqual(v1.innerProduct(c * v2), c * v1.innerProduct(v2))
+        # ⟨v1, v2⟩ = conj(⟨v2, v1⟩)
+        self.assertEqual(v1.innerProduct(v2), v2.innerProduct(v1).conjugate())
+
+    def testIsSquared(self):
+        a = ComplexM(5,5, [[i*j for j in range(5)] for i in range(5)])
+        self.assertTrue(a.isSquared())
+        b = ComplexM(4,5, a[0:4])
+        self.assertFalse(b.isSquared())
+
     def testToString(self):
         a = ComplexM(2, 2, [ [(2, -6), (12, -6)], [(12, 4), (18, -4)] ])
         str(a)
