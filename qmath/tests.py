@@ -512,6 +512,23 @@ class ComplexMTest(unittest.TestCase):
         self.assertEqual(c, a.tensor(b))
         self.assertNotEqual(c, b.tensor(a))
 
+        a = ComplexM(2, 3,
+                [
+                  [(3, 2)  , (0, 0)   , (5, -6) ],
+                  [(1, 0)  , (4, 2)   , (0, 1)  ],
+                ]
+            )
+        b = ComplexM(3, 2,
+                [
+                  [(5, 0)  , (2, -1)],
+                  [(0, 0)  , (4, 5)],
+                  [(7, -4) , (2, 7)],
+                ]
+            )
+        c = ComplexM(5, 1, [[(-2, -4)], [(3, -0.5)], [(2, -1)], [(4, -3)], [(6.5, 3)]])
+
+        self.assertEqual(a.tensor(b).tensor(c), a.tensor((b.tensor(c))))
+
     def testToString(self):
         a = ComplexM(2, 2, [ [(2, -6), (12, -6)], [(12, 4), (18, -4)] ])
         str(a)
