@@ -193,10 +193,10 @@ class ComplexM(object):
         sm, sn = self.getSize()
         om, on = other.getSize()
 
-        if sm != on:
+        if sn != om:
             raise TypeError("Cannot multiply a ComplexM of size {0}x{1} with a ComplexM of size {2}x{3}".format(str(sm),str(sn),str(om),str(on)))
 
-        new_values = [[Complex(0) for _ in range(sm)] for _ in range(on)]
+        new_values = [[Complex(0) for _ in range(on)] for _ in range(sm)]
 
         for i in range(sm):
             for j in range(on):

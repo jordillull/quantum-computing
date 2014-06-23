@@ -331,6 +331,41 @@ class ComplexMTest(unittest.TestCase):
         self.assertEqual((a*b).adjoint(), b.adjoint() * a.adjoint())
         self.assertEqual((a*b).conjugate(), a.conjugate() * b.conjugate())
 
+    def testMulMatrixVector(self):
+        a = ComplexM(6, 6,
+                [
+                    [0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0],
+                    [0, 1, 0, 0, 0, 1],
+                    [0, 0, 0, 1, 0, 0],
+                    [0, 0, 1, 0, 0, 0],
+                    [1, 0, 0, 0, 1, 0],
+                ]
+            )
+        w = ComplexM(6, 1,
+                [
+                  [6],
+                  [2],
+                  [1],
+                  [5],
+                  [3],
+                  [10],
+                ]
+            )
+        res = ComplexM(6, 1,
+                [
+                  [0],
+                  [0],
+                  [12],
+                  [5],
+                  [1],
+                  [9],
+                ]
+            )
+
+        self.assertEqual(res, a * w)
+
+
     def testNegate(self):
         a = ComplexM(2, 2, [ [(2, -6), (12, -6)], [(12, 4), (18,-4)] ])
         b = ComplexM(2, 2, [ [(-2, 6), (-12, 6)], [(-12, -4), (-18,4)] ])
