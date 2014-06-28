@@ -45,7 +45,8 @@ def getQuantumMatrix():
 
 def getProbabilityMatrix(matrix):
     m, n = matrix.getSize()
-    probabilities = [[abs(matrix[i][j]) ** 2 for j in range(n)] for i in range(m)]
+    norm = matrix.norm()
+    probabilities = [[(abs(matrix[i][j]) ** 2) / (norm ** 2) for j in range(n)] for i in range(m)]
 
     return ComplexM(m, n, probabilities)
 
