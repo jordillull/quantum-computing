@@ -297,6 +297,13 @@ class ComplexM(object):
             return False
         return self * self.adjoint() == self.getIdentity()
 
+    def normalize(self):
+        norm = self.norm()
+        (m, n) = self.getSize()
+        new_values = [ [self[i][j] / norm for j in range(n)] for i in range(m)]
+
+        return ComplexM(m, n, new_values)
+
     def getIdentity(self):
         m, n = self.getSize()
         if m != n:

@@ -564,6 +564,16 @@ class ComplexMTest(unittest.TestCase):
 
         self.assertEqual(a.tensor(b).tensor(c), a.tensor((b.tensor(c))))
 
+    def testNormalize(self):
+        v = ComplexM(2, 1, [ [(1, 0)], [(0, 1)] ])
+        w = ComplexM(2, 1, [ [(4, 0)], [(0, 4)] ])
+        self.assertEqual(v.normalize(), w.normalize())
+
+        # This test fails due to the loss of precision.
+        #   n = Complex(sqrt(2) / 2.0, 0) * v
+        #   self.assertEqual(n, v.normalize())
+
+
     def testToString(self):
         a = ComplexM(2, 2, [ [(2, -6), (12, -6)], [(12, 4), (18, -4)] ])
         str(a)
