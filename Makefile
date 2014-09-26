@@ -1,9 +1,12 @@
 all:
 
-test: test-qmath
+test: test-complex test-operations
 
-test-qmath:
-	python3 qmath/tests.py --verbose
+test-complex:
+	python3 qmath/tests/complex_tests.py --verbose
+
+test-operations:
+	python3 qmath/tests/operations_tests.py --verbose
 
 marble-experiment:
 	python3 experiments/marbles.py < experiments/samples/6x6_sample
