@@ -9,57 +9,81 @@ from ply import lex
 
 operations = {
     'INITIALIZE' : 'INITIALIZE',
+    'TENSOR'     : 'TENSOR',
     'APPLY'      : 'APPLY',
     'SELECT'     : 'SELECT',
     'CONCAT'     : 'CONCAT',
     'MEASURE'    : 'MEASURE',
 }
 gates = {
-    'TENSOR'     : 'TENSOR',
     'CNOT'       : 'CNOT',
     'H'          : 'H',
 }
 
 tokens = [
+    'IMATRIX',
     'REGISTER',
-    'IDENTITY_MATRIX',
+    'BITSTRING',
     'DIGIT',
-    'IDENTIFIER',
+    'VARIABLE',
 ]
 
 tokens = tokens + list(operations.values()) + list(gates.values())
 
-t_REGISTER        = r'R\d+' # R followed by a digit
-t_IDENTITY_MATRIX = r'I\d+'
-t_DIGIT           = r'\d+'
+def QLexer():
+    t_ignore = ' \t'
 
-def t_IDENTIFIER(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    def t_REGISTER(t):
+        r'R\d+'
+        t.type = 'REGISTER'
+        return t
 
-    # Either operations and gates are reserved words
-    t.type = operations.get(t.value)
 
-    if (t.type == None):
-        t.type = gates.get(t.value)
+    def t_GT_IMATRIX(t):
+        r'I\d+'
+        t.type = 'GT_IMATRIX'
+        return t
 
-    if (t.type == None):
-        t.type = 'IDENTIFIER'
+    def t_BITSTRING(t):
+        r'\[[01]+\]'
+        t.type = 'BITSTRING'
+        return t
 
-    return t
+    def t_DIGIT(t):
+        r'\d+'
+        t.type = 'DIGIT'
+        return t
 
-def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
 
-# Error handling rule
-def t_error(t):
-    print("Illegal character '{0}'".format(t.value[0]))
-    t.lexer.skip(1)
+    def t_VARIABLE(t):
+        r'[a-zA-Z_][a-zA-Z_0-9]*'
 
-t_ignore = ' \t'
+        # Either operations and gates are reserved words
+        t.type = operations.get(t.value)
+
+        if (t.type == None):
+            t.type = gates.get(t.value)
+
+        if (t.type == None):
+            t.type = 'VARIABLE'
+
+        return t
+
+    def t_newline(t):
+        r'\n+'
+        t.lexer.lineno += len(t.value)
+
+    # Error handling rule
+    def t_error(t):
+        print("Illegal character '{0}'".format(t.value[0]))
+        t.lexer.skip(1)
+
+    return lex.lex()
+
+lexer = QLexer()
 
 if __name__ == "__main__":
-    lexer = lex.lex()
+    lexer = QLexer()
     print("Lexycal Analyser for the custom Quantum Assembler Language.")
     print("  Enter a line input to see its lexycal analysis. Type 'exit' to end.")
     while True:
@@ -68,8 +92,6 @@ if __name__ == "__main__":
         if (inp == "exit"):
             break
         lexer.input(inp)
-        while True:
-            tok = lexer.token()
-            if not tok:
-                break
+        for tok in lexer:
             print(tok)
+
