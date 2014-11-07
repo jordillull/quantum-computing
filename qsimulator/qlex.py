@@ -61,10 +61,10 @@ def QLexer():
         # Either operations and gates are reserved words
         t.type = operations.get(t.value)
 
-        if (t.type == None):
+        if t.type == None:
             t.type = gates.get(t.value)
 
-        if (t.type == None):
+        if t.type == None:
             t.type = 'VARIABLE'
 
         return t
@@ -84,12 +84,12 @@ lexer = QLexer()
 
 if __name__ == "__main__":
     lexer = QLexer()
-    print("Lexycal Analyser for the custom Quantum Assembler Language.")
-    print("  Enter a line input to see its lexycal analysis. Type 'exit' to end.")
+    print("Lexical Analyser for the custom Quantum Assembler Language.")
+    print("  Enter a line input to see its lexical analysis. Type 'exit' to end.")
     while True:
         print(">>> ", end="")
         inp = input()
-        if (inp == "exit"):
+        if inp == "exit":
             break
         lexer.input(inp)
         for tok in lexer:

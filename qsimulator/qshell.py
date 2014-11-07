@@ -26,17 +26,16 @@ def op_concat(p):
     print("op_concat: not implemeted yet")
 
 def op_tensor(p):
-    '''op_concat : VARIABLE TENSOR matrix matrix'''
+    '''op_tensor : VARIABLE TENSOR matrix'''
     print("op_tensor: not implemeted yet")
 
 def op_measure(p):
     '''op_measure : MEASURE VARIABLE VARIABLE'''
     print("op_measure: not implemeted yet")
 
-
 def p_matrix(p):
-    '''transformation : gate
-                      | VARIABLE'''
+    '''matrix : gate
+              | VARIABLE'''
     p[0] = p[1]
 
 def p_gate(p):
@@ -48,7 +47,6 @@ def p_gate(p):
 def p_identity(p):
     '''identity : IMATRIX'''
     p[0] = p[1]
-
 
 if __name__ == "__main__":
     parser = yacc.yacc()
@@ -62,4 +60,3 @@ if __name__ == "__main__":
         if not s: continue
         result = parser.parse(s)
         print(result)
-
