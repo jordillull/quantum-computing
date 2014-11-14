@@ -12,24 +12,44 @@ from prettytable import PrettyTable
 class Complex(object):
 
     def __init__(self, real=None, imaginary=None):
-        self.real_value = 0
-        self.imaginary_value = 0
         if imaginary is None:
             value = real
             if value is None:
-                self.set_value(0, 0)
+                self.value = (0, 0)
             elif isinstance(value, (int, float)):
-                self.set_value(value, 0)
+                self.value = (value, 0)
             elif isinstance(value, Complex):
-                self.set_value(value.real_value, value.imaginary_value)
+                self.value = (value.real_value, value.imaginary_value)
             elif isinstance(value, (tuple, list)) and len(value) == 2:
-                self.set_value(value[0], value[1])
+                self.value = (value[0], value[1])
             else:
 
                 raise TypeError("Cannot make a complex number from an object of class {0}"
                                 .format(value.__class__.__name__))
         else:
-            self.set_value(real, imaginary)
+            self.value = (real, imaginary)
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, new_value):
+        if not isinstance(new_value, tuple):
+            raise ValueError("The complex value should be a tuple of size 2")
+
+        if isinstance(new_value[0], (int, float)) and isinstance(new_value[1], (int, float)):
+            self._value = new_value
+        else:
+            raise TypeError("The real and the imaginary part of a complex number should be valid real numbers")
+
+    @property
+    def real_value(self):
+        return self.value[0]
+
+    @property
+    def imaginary_value(self):
+        return self.value[1]
 
     def __str__(self):
         return self.to_string()
@@ -85,20 +105,13 @@ class Complex(object):
         other = Complex(other)
         return self.real_value == other.real_value and self.imaginary_value == other.imaginary_value
 
-    def set_value(self, real, imaginary):
-        if isinstance(real, (int, float)) and isinstance(imaginary, (int, float)):
-            self.real_value = real
-            self.imaginary_value = imaginary
-        else:
-            raise TypeError("The real and the imaginary part of a complex number should be valid real numbers")
-
     def get_value(self):
         return self.__value
 
     def set_value_from_polar(self, modulus, angle):
         real = modulus * cos(angle)
         imaginary = modulus * sin(angle)
-        self.set_value(real, imaginary)
+        self.value = (real, imaginary)
         return self
 
     def get_value_as_polar(self):
