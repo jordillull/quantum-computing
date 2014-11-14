@@ -30,6 +30,7 @@ tokens = [
 
 tokens = tokens + list(operations.values()) + list(gates.values())
 
+
 def QLexer():
     t_ignore = ' \t'
 
@@ -37,7 +38,6 @@ def QLexer():
         r'R\d+'
         t.type = 'REGISTER'
         return t
-
 
     def t_GT_IMATRIX(t):
         r'I\d+'
@@ -54,17 +54,16 @@ def QLexer():
         t.type = 'DIGIT'
         return t
 
-
     def t_VARIABLE(t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'
 
         # Either operations and gates are reserved words
         t.type = operations.get(t.value)
 
-        if t.type == None:
+        if t.type is None:
             t.type = gates.get(t.value)
 
-        if t.type == None:
+        if t.type is None:
             t.type = 'VARIABLE'
 
         return t
