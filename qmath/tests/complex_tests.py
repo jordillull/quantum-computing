@@ -116,13 +116,13 @@ class ComplexTest(unittest.TestCase):
                        ]
 
         for cartesian in test_numbers:
-            polar = Complex().setValueFromPolar(cartesian.getValueAsPolar()[0], cartesian.getValueAsPolar()[1])
+            polar = Complex().set_value_from_polar(cartesian.get_value_as_polar()[0], cartesian.get_value_as_polar()[1])
 
             # We have to round the values due to the unavoidable loss of precision
-            c_a = round(cartesian.getRealValue(), 12)
-            c_b = round(cartesian.getImaginaryValue(), 12)
-            p_a = round(polar.getRealValue(), 12)
-            p_b = round(polar.getImaginaryValue(), 12)
+            c_a = round(cartesian.real_value, 12)
+            c_b = round(cartesian.imaginary_value, 12)
+            p_a = round(polar.real_value, 12)
+            p_b = round(polar.imaginary_value, 12)
 
             self.assertEqual(c_a, p_a, "{0} is not equal to {1}".format(cartesian, polar))
             self.assertEqual(c_b, p_b, "{0} is not equal to {1}".format(cartesian, polar))
@@ -137,6 +137,7 @@ class ComplexTest(unittest.TestCase):
         self.assertEqual('-5i', str(Complex(0, -5)))
         self.assertEqual('4+i', str(Complex(4, 1)))
         self.assertEqual('-3.43-i', str(Complex(-3.4300, -1)))
+
 
 class ComplexVTest(unittest.TestCase):
     def testAdd(self):
@@ -181,8 +182,9 @@ class ComplexVTest(unittest.TestCase):
         v = ComplexM(3, 1, [[(-1, -2)], [(1, 2)], [(-4, 2.5)]])
         a = ComplexM(1, 3, [[(-1, -2), (1, 2), (-4, 2.5)]])
 
-        self.assertTrue(v.isVector())
-        self.assertFalse(a.isVector())
+        self.assertTrue(v.is_vector())
+        self.assertFalse(a.is_vector())
+
 
 class ComplexMTest(unittest.TestCase):
     def testConstruct(self):
@@ -190,7 +192,7 @@ class ComplexMTest(unittest.TestCase):
 
         a = ComplexM(7,10, values)
         self.assertIsInstance(a, ComplexM)
-        self.assertEqual(a.getSize(), (7,10))
+        self.assertEqual(a.size, (7, 10))
 
         with self.assertRaises(ValueError):
             ComplexM(10,7, values)
@@ -286,7 +288,7 @@ class ComplexMTest(unittest.TestCase):
         self.assertEqual(a*b, res)
         self.assertNotEqual(b*a, a*b)
 
-        ident = a.getIdentity()
+        ident = a.get_identity()
         self.assertEqual(a, a*ident)
         self.assertEqual(b, b*ident)
 
@@ -325,9 +327,9 @@ class ComplexMTest(unittest.TestCase):
         self.assertEqual(a*b, res)
         self.assertNotEqual(b*a, a*b)
 
-        self.assertIsNone(a.getIdentity())
-        self.assertIsNone(b.getIdentity())
-        self.assertIsNotNone(res.getIdentity())
+        self.assertIsNone(a.get_identity())
+        self.assertIsNone(b.get_identity())
+        self.assertIsNotNone(res.get_identity())
 
         x = Complex(4,-3.5)
         self.assertEqual(x * (a*b), (x*a) * b)
@@ -395,35 +397,35 @@ class ComplexMTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             b.trace()
 
-    def testVectorInnerProduct(self):
+    def testVectorinner_product(self):
         v1 = ComplexM(3, 1, [[(2, -5)], [(1, 0)], [(3, 1)]])
         v2 = ComplexM(3, 1, [[(2, 1)], [(2, 3)], [(4, 14)]])
         v3 = ComplexM(3, 1, [[(0, -2)], [(-1, 0)], [(2, -3)]])
         c  = Complex(3, 3)
         vz = ComplexM(3, 1, [[0], [0], [0]])
 
-        self.assertIsInstance(v1.innerProduct(v2), Complex)
+        self.assertIsInstance(v1.inner_product(v2), Complex)
         # v ≠ 0 → ⟨v, v⟩ > 0
-        self.assertGreater(v1.innerProduct(v1).getRealValue(), 0)
-        self.assertEqual(v1.innerProduct(v1).getImaginaryValue(), 0)
+        self.assertGreater(v1.inner_product(v1).real_value, 0)
+        self.assertEqual(v1.inner_product(v1).imaginary_value, 0)
         # ⟨v1, v2⟩ = 0 ↔ v = 0
-        self.assertEqual(vz.innerProduct(vz), Complex(0))
+        self.assertEqual(vz.inner_product(vz), Complex(0))
         # ⟨v1+v2, v3⟩ = ⟨v1, v3⟩ + ⟨v2, v3⟩
-        self.assertEqual((v1 + v2).innerProduct(v3), v1.innerProduct(v3) + v2.innerProduct(v3))
+        self.assertEqual((v1 + v2).inner_product(v3), v1.inner_product(v3) + v2.inner_product(v3))
         # ⟨v1, v2+v3⟩ = ⟨v1, v2⟩ + ⟨v1, v3⟩
-        self.assertEqual(v1.innerProduct(v2 + v3), v1.innerProduct(v2) + v1.innerProduct(v3))
+        self.assertEqual(v1.inner_product(v2 + v3), v1.inner_product(v2) + v1.inner_product(v3))
         # ⟨c v1, v2⟩ = conj(c) ⟨v1, v2⟩
-        self.assertEqual((v1 * c).innerProduct(v2), c.conjugate() * v1.innerProduct(v2))
+        self.assertEqual((v1 * c).inner_product(v2), c.conjugate() * v1.inner_product(v2))
         # ⟨v1, c v2⟩ = c ⟨v2, v1⟩
-        self.assertEqual(v1.innerProduct(c * v2), c * v1.innerProduct(v2))
+        self.assertEqual(v1.inner_product(c * v2), c * v1.inner_product(v2))
         # ⟨v1, v2⟩ = conj(⟨v2, v1⟩)
-        self.assertEqual(v1.innerProduct(v2), v2.innerProduct(v1).conjugate())
+        self.assertEqual(v1.inner_product(v2), v2.inner_product(v1).conjugate())
 
     def testIsSquared(self):
         a = ComplexM(5,5, [[i*j for j in range(5)] for i in range(5)])
-        self.assertTrue(a.isSquared())
+        self.assertTrue(a.is_squared())
         b = ComplexM(4,5, a[0:4])
-        self.assertFalse(b.isSquared())
+        self.assertFalse(b.is_squared())
 
     def testNorm(self):
         v1 = ComplexM(4, 1, [ [(4, 3)], [(6,-4)], [(12,-7)], [(0,13)]])
@@ -480,10 +482,10 @@ class ComplexMTest(unittest.TestCase):
                 ]
             )
 
-        self.assertTrue(a.isHermitian())
-        self.assertFalse(b.isHermitian())
+        self.assertTrue(a.is_hermitian())
+        self.assertFalse(b.is_hermitian())
         c = ComplexM(2, 3, a[0:2])
-        self.assertFalse(c.isHermitian())
+        self.assertFalse(c.is_hermitian())
 
     def testIsUnitary(self):
         a = ComplexM(3, 3,
@@ -508,12 +510,12 @@ class ComplexMTest(unittest.TestCase):
                   [(0, 0)          , (0, 0)         , (0, 1) ],
                 ]
             )
-        self.assertFalse(a.isUnitary())
-        self.assertTrue(b.isUnitary())
+        self.assertFalse(a.is_unitary())
+        self.assertTrue(b.is_unitary())
         # Despite c  and d being unitary matrices the test below will fail
         # because of the loss of precision
-        #   self.assertTrue(c.isUnitary())
-        #   self.assertTrue(d.isUnitary())
+        #   self.assertTrue(c.is_unitary())
+        #   self.assertTrue(d.is_unitary())
 
     def testTensor(self):
         v1 = ComplexM(3, 1, [[3], [4], [7]])

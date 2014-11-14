@@ -13,15 +13,19 @@ measuring it.
 
 @author: Jordi Llull
 '''
-import os, sys, inspect
+import os
+import sys
+import inspect
+
 cmd_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]) + "/..")
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
 from qmath.complex import ComplexM
-from math import sqrt
 
-def getVectorOrIndex():
+
+def get_vector_or_index():
+
     vector = []
     element = input('> ')
 
@@ -38,23 +42,27 @@ def getVectorOrIndex():
     else:
         return (ComplexM(len(vector), 1, vector), True)
 
-def getProbabilityTransition(v, w):
+
+def get_probability_transition(v, w):
+
     if isinstance(w, ComplexM):
-        # This is equivalent to v.normalize().innerProduct(w.normalize())
-        return v.innerProduct(w) / (v.norm() * w.norm())
+        # This is equivalent to v.normalize().inner_product(w.normalize())
+        return v.inner_product(w) / (v.norm() * w.norm())
     else:
         return (abs(v[w][0]) ** 2) / (v.norm() ** 2)
 
+
 def main():
+
     print("""Insert a vector describing a quantum state. Each element separated by a new line.""")
-    (v, is_vector) = getVectorOrIndex()
+    (v, is_vector) = get_vector_or_index()
     if not is_vector:
         raise ValueError("Expected the first input to be a vector")
     print()
     print("""Insert a second vector or an index of the first vector""")
-    (w, is_vector) = getVectorOrIndex()
+    (w, is_vector) = get_vector_or_index()
 
-    p = getProbabilityTransition(v, w)
+    p = get_probability_transition(v, w)
     print()
     if is_vector:
         print("The probability of the system transitioning from the first state to the second is {0}".format(p))

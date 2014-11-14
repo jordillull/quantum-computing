@@ -4,7 +4,9 @@ It performs a double slit experiment with a quantum particle and with a non quan
 
 @author: Jordi Llull
 '''
-import os, sys, inspect
+import os
+import sys
+import inspect
 cmd_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]) + "/..")
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
@@ -13,7 +15,7 @@ from qmath.complex import ComplexM
 from math import sqrt
 
 
-def getNonQuantumMatrix():
+def get_non_quantum_matrix():
     return ComplexM(8, 8,
             [
              [(0, 0)  , (0, 0)     , (0, 0)     , (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)],
@@ -27,7 +29,8 @@ def getNonQuantumMatrix():
             ]
             )
 
-def getQuantumMatrix():
+
+def get_quantum_matrix():
     s2 = sqrt(2)
     s6 = sqrt(6)
     return ComplexM(8, 8,
@@ -43,8 +46,9 @@ def getQuantumMatrix():
             ]
             )
 
-def getProbabilityMatrix(matrix):
-    m, n = matrix.getSize()
+
+def get_probability_matrix(matrix):
+    m, n = matrix.size
     norm = matrix.norm()
     probabilities = [[(abs(matrix[i][j]) ** 2) / (norm ** 2) for j in range(n)] for i in range(m)]
 
@@ -52,14 +56,14 @@ def getProbabilityMatrix(matrix):
 
 
 def main():
-    a = getNonQuantumMatrix()
-    b = getQuantumMatrix()
-    v = ComplexM(8, 1, [ [1], [0], [0], [0], [0], [0], [0], [0] ])
+    a = get_non_quantum_matrix()
+    b = get_quantum_matrix()
+    v = ComplexM(8, 1, [[1], [0], [0], [0], [0], [0], [0], [0]])
 
     print("The probability vector for a NON quantum particle is:")
     print(a * a * v)
     print("The probability vector for a quantum particle is:")
-    print(getProbabilityMatrix(b * b * v))
+    print(get_probability_matrix(b * b * v))
 
 if __name__ == '__main__':
     main()
