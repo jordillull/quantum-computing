@@ -52,6 +52,6 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
-qsimulator/parser.out
-qsimulator/parsetab.py
+*parser.out
+*parsetab.py
 

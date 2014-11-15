@@ -21,3 +21,9 @@ qstate-experiment1:
 
 qstate-experiment2:
 	python3 experiments/quantum_state.py < experiments/samples/qstate_2.txt
+
+qlex:
+	ipython3 qsimulator/qlex.py
+
+qparse:
+	ipython3 qsimulator/qparse.py

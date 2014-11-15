@@ -14,6 +14,7 @@ operations = {
     'SELECT'     : 'SELECT',
     'CONCAT'     : 'CONCAT',
     'MEASURE'    : 'MEASURE',
+    'INVERSE'    : 'INVERSE',
 }
 gates = {
     'CNOT'       : 'CNOT',
@@ -37,21 +38,25 @@ def QLexer():
     def t_REGISTER(t):
         r'R\d+'
         t.type = 'REGISTER'
+        t.value = int(t.value[1:])
         return t
 
-    def t_GT_IMATRIX(t):
+    def t_IMATRIX(t):
         r'I\d+'
-        t.type = 'GT_IMATRIX'
+        t.type = 'IMATRIX'
+        t.value = int(t.value[1:])
         return t
 
     def t_BITSTRING(t):
         r'\[[01]+\]'
         t.type = 'BITSTRING'
+        t.value = t.value[1:-1]
         return t
 
     def t_DIGIT(t):
         r'\d+'
         t.type = 'DIGIT'
+        t.value = int(t.value)
         return t
 
     def t_VARIABLE(t):
@@ -84,13 +89,14 @@ lexer = QLexer()
 if __name__ == "__main__":
     lexer = QLexer()
     print("Lexical Analyser for the custom Quantum Assembler Language.")
-    print("  Enter a line input to see its lexical analysis. Type 'exit' to end.")
+    print("  Enter a line input to see its lexical analysis. Type CTRL+D to exit.")
     while True:
-        print(">>> ", end="")
-        inp = input()
-        if inp == "exit":
+        try:
+            s = input('[qshell] >>> ')
+        except EOFError:
             break
-        lexer.input(inp)
+
+        lexer.input(s)
         for tok in lexer:
-            print(tok)
+            print("    {0}".format(tok))
 
