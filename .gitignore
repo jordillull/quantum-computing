@@ -53,4 +53,5 @@ coverage.xml
 docs/_build/
 
 qsimulator/parser.out
+qsimulator/parsetab.py
 
