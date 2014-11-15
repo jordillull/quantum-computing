@@ -8,7 +8,7 @@ Interpreter for our custom Quantum Assembler Language
 from ply import yacc
 from qlex import tokens
 from qinstruction import *
-
+from qsimulator import qinstruction
 
 def p_instruction(p):
     '''instruction : op_initialize
@@ -63,7 +63,8 @@ def p_inverse(p):
 
 def p_matrix(p):
     '''matrix : gate
-              | variable '''
+              | variable
+              | register'''
     p[0] = p[1]
 
 
@@ -109,10 +110,19 @@ def p_identity(p):
     p[0] = Identity(p[1])
 
 
+def p_error(p):
+    pass
+
+
 if __name__ == "__main__":
+    from qcomputer import QComputer
+    from qinstrhandler import DummyPrintHandler
+
     parser = yacc.yacc()
     print("Quantum Assembler interpreter. Write an instruction.")
     print("Type CTRL+D to exit.")
+
+    qcomp = QComputer([DummyPrintHandler])
 
     while True:
         try:
@@ -122,5 +132,9 @@ if __name__ == "__main__":
 
         if not s:
             continue
+
         result = parser.parse(s)
-        print(result)
+        if isinstance(result, (Instruction)):
+            qcomp.execute_instruction(result)
+        else:
+            print("  Error: Invalid instruction")
