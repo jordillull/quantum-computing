@@ -66,6 +66,7 @@ class Concat(Instruction):
                                                       self.variable)
         return string
 
+
 class Measure(Instruction):
     def __init__(self, register, realvar):
         self.register = register
@@ -121,6 +122,7 @@ class BitString(object):
     def __str__(self):
         return "BitString[{0}]".format(self.value)
 
+
 class Digit(object):
     def __init__(self, value):
         self.value = value
@@ -136,9 +138,11 @@ class Register(object):
     def __str__(self):
         return "R[{0}]".format(self.number)
 
+
 class Matrix(object):
     def __init__(self, value):
         self.value = value
+
 
 class Gate(Matrix, metaclass=ABCMeta):
     pass
@@ -158,6 +162,7 @@ class H(Gate):
 
     def __str__(self):
         return "H"
+
 
 class Identity(Gate):
     def __init__(self, size):

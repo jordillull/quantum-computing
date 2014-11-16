@@ -6,8 +6,9 @@ Quantum Computer simulator
 '''
 
 from qmath.complex import ComplexM
-from qinstrhandler import *
-from qinstruction import *
+from qinstrhandler import DummyPrintHandler
+from qinstruction import Instruction, Select, Initialize, Apply, Concat, \
+                         Measure, Tensor, Inverse
 
 
 class InstructionHandlerRegisterError(Exception):

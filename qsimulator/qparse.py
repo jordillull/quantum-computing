@@ -7,7 +7,9 @@ Interpreter for our custom Quantum Assembler Language
 
 from ply import yacc
 from qlex import tokens
-from qinstruction import *
+from qinstruction import Instruction, Select, Initialize, Apply, Concat, \
+                         Measure, Tensor, Inverse
+from qinstruction import Variable, BitString, Digit, Register, CNot, H, Identity
 from qsimulator import qinstruction
 
 def p_instruction(p):
