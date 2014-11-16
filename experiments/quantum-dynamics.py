@@ -9,11 +9,11 @@ cmd_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(insp
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
-from qmath.complex import ComplexM
+from qsimulator.qmath import ComplexM
 from math import sqrt
 
 def getProbabilityMatrix(matrix):
-    m, n = matrix.getSize()
+    m, n = matrix.size
     norm = matrix.norm()
     probabilities = [[(abs(matrix[i][j]) ** 2) / (norm ** 2) for j in range(n)] for i in range(m)]
 

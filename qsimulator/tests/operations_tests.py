@@ -12,11 +12,10 @@ if cmd_folder not in sys.path:
 
 import unittest
 
-from complex import ComplexM
-from operations import q_observe
+from qmath import ComplexM, q_observe
 
 
-class ComplexTest(unittest.TestCase):
+class ComplexOperationsTest(unittest.TestCase):
 
     def testQObserve(self):
         # Bad input

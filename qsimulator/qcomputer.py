@@ -5,7 +5,7 @@ Quantum Computer simulator
 @author: jllull
 '''
 
-from qmath.complex import ComplexM
+from qmath import ComplexM
 from qinstrhandler import DummyPrintHandler
 from qinstruction import Instruction, Select, Initialize, Apply, Concat, \
                          Measure, Tensor, Inverse

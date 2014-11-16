@@ -3,15 +3,16 @@ Created on Jun 15, 2014
 
 @author: Jordi Llull
 '''
-import os, sys, inspect
-#cmd_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]) + "/../..")
+import os
+import sys
+import inspect
 cmd_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]) + "/..")
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
 import unittest
 
-from complex import Complex, ComplexM
+from qmath import Complex, ComplexM
 from math import sqrt
 
 class ComplexTest(unittest.TestCase):

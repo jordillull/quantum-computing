@@ -21,7 +21,7 @@ cmd_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(insp
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
-from qmath.complex import ComplexM
+from qsimulator.qmath import ComplexM
 
 
 def get_vector_or_index():

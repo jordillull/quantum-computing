@@ -52,6 +52,11 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# YACC files
 *parser.out
 *parsetab.py
+
+# Markdown previews
+.README.md.html
+
 

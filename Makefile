@@ -3,10 +3,10 @@ all:
 test: test-complex test-operations
 
 test-complex:
-	python3 qmath/tests/complex_tests.py --verbose
+	python3 qsimulator/tests/complex_tests.py --verbose
 
 test-operations:
-	python3 qmath/tests/operations_tests.py --verbose
+	python3 qsimulator/tests/operations_tests.py --verbose
 
 marble-experiment:
 	python3 experiments/marbles.py < experiments/samples/6x6_sample

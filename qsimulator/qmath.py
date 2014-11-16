@@ -6,7 +6,11 @@ Handles complex numbers
 
 from math import sqrt
 from math import sin, cos, atan, pi
-from prettytable import PrettyTable
+try:
+    from prettytable import PrettyTable
+    PRETTY_PRINT = True
+except ImportError:
+    PRETTY_PRINT = False
 
 
 class Complex(object):
@@ -339,9 +343,38 @@ class ComplexM(object):
         return self.transpose()[j]
 
     def to_string(self):
-        t = PrettyTable(header=False)
+        if PRETTY_PRINT:
+            t = PrettyTable(header=False)
 
-        for row in self:
-            t.add_row(row)
+            for row in self:
+                t.add_row(row)
 
-        return str(t)
+            return str(t)
+        else:
+            string = "ComplexM([\n"
+            for row in self:
+                string += "    ["
+                for col in row:
+                    string += "{0}, ".format(str(col))
+                string += "],\n"
+            string += "])\n"
+            return string
+
+
+def q_observe(vector: 'ComplexM', hmatrix: 'ComplexM'):
+    '''
+    Simulates an observation in a quantum system.
+
+    Given a vector of size n representing a quantum system and a hermitian
+    matrix of size n×n it will return the mean value and the variance of the
+    observable on the given state
+    @vector: ComplexM
+    @hmatrix: ComplexM
+    '''
+    if not isinstance(vector, ComplexM) or not isinstance(hmatrix, ComplexM):
+        raise TypeError("The parameters should be of type ComplexM")
+
+    if not hmatrix.is_hermitian():
+        raise ValueError("The second parameter shoudl be a hermitian matrix")
+
+    return hmatrix * vector
