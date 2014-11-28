@@ -16,7 +16,11 @@ import unittest
 from qcomputer import QComputer
 from qmath import ComplexM
 from utils import bitstring_to_matrix
-from test_utils import get_dummy_computer, get_functional_computer, initialize_instruction, zero_matrix
+from test_utils import get_dummy_computer, \
+                       get_functional_computer, \
+                       zero_matrix, \
+                       instr_initialize, \
+                       instr_select
 
 
 class QComputerTest(unittest.TestCase):
@@ -28,7 +32,7 @@ class QComputerTest(unittest.TestCase):
 
     def testRegisterInitializationOnlyInitializedTheGivenRegister(self):
         qcomp = get_functional_computer(nregisters=4)
-        qcomp.execute(initialize_instruction(1))
+        qcomp.execute(instr_initialize(1))
 
         self.assertTrue(qcomp.registers[1].is_initialized)
         self.assertFalse(qcomp.registers[0].is_initialized)
@@ -37,14 +41,14 @@ class QComputerTest(unittest.TestCase):
 
     def testRegistersAreInitializedToTheZeroMatrixByDefault(self):
         qcomp = get_functional_computer(nregisters=4, sqrt_size=3)
-        qcomp.execute(initialize_instruction(2))
+        qcomp.execute(instr_initialize(2))
 
         self.assertEqual(zero_matrix(qcomp.sqrt_size), qcomp.registers[2].value)
 
     def testInitializeRegisterWithBitString(self):
         qcomp = get_functional_computer(nregisters=4, sqrt_size=3)
         value = "101100010"
-        qcomp.execute(initialize_instruction(0, value))
+        qcomp.execute(instr_initialize(0, value))
 
         cvalue = ComplexM(3, 3, bitstring_to_matrix(value, 3))
 
@@ -54,13 +58,36 @@ class QComputerTest(unittest.TestCase):
         qcomp = get_functional_computer(nregisters=4, sqrt_size=3)
         value = "00101010001"
         with self.assertRaises(ValueError):
-            qcomp.execute(initialize_instruction(0, value))
+            qcomp.execute(instr_initialize(0, value))
 
     def testInitializeRegisterWithInvalidBitstringRaisesAnError(self):
         qcomp = get_functional_computer(nregisters=4, sqrt_size=3)
         value = "00102010001"
         with self.assertRaises(ValueError):
-            qcomp.execute(initialize_instruction(0, value))
+            qcomp.execute(instr_initialize(0, value))
+
+    def testSelectValueFromInitializedRegister(self):
+        qcomp = get_functional_computer(nregisters=4, sqrt_size=3)
+        value = "001001001"
+        expected_value = ComplexM(1, 9, [[0, 0, 1, 0, 0, 1, 0, 0, 1]])
+
+        qcomp.execute(instr_initialize(0, value))
+        qcomp.execute(instr_select('V1', 0, 0, 9))
+
+        self.assertEquals(expected_value, qcomp.variables['V1'].value)
+
+    def testSelectFromNotInitializedRegistersRaisesAnError(self):
+        qcomp = get_functional_computer(nregisters=4, sqrt_size=3)
+
+        with self.assertRaises(ValueError):
+            qcomp.execute(instr_select('V1', 0, 1, 2))
+
+    def testSelectOutOfBoundsRaiseAnError(self):
+        qcomp = get_functional_computer(nregisters=4, sqrt_size=3)
+        qcomp.execute(instr_initialize(0))
+        with self.assertRaises(IndexError):
+            qcomp.execute(instr_select('V1', 0, 0, 10))
+
 
 
 
