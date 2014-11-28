@@ -9,6 +9,7 @@ from qinstruction import Instruction, Select, Initialize, Apply, Concat, \
                          Measure, Tensor, Inverse
 from abc import ABCMeta, abstractmethod
 
+
 class InstructionHandler(metaclass=ABCMeta):
 
     def __init__(self, instruction):
@@ -40,7 +41,7 @@ class InitializeHandler(InstructionHandler):
         '''
         @return: A tuple of handled instructions
         '''
-        return (Initialize)
+        return (Initialize,)
 
     def execute(self, computer):
         '''
