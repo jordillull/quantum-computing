@@ -135,6 +135,12 @@ if __name__ == "__main__":
         if not s:
             continue
 
+        # Although 'STATUS' is not a valid instruction we'll use it to display
+        # the quantum computer state 
+        if s == "STATUS":
+            print(qcomp.get_status_info())
+            continue
+
         result = parser.parse(s)
         if isinstance(result, (Instruction)):
             qcomp.execute_instruction(result)
