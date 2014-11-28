@@ -10,6 +10,8 @@ from qinstrhandler import DummyPrintHandler
 from qinstruction import Instruction, Select, Initialize, Apply, Concat, \
                          Measure, Tensor, Inverse
 
+from utils import bitstring_to_matrix
+
 
 class InstructionHandlerRegisterError(Exception):
     pass
@@ -20,7 +22,7 @@ class QComputer(object):
     def __init__(self, handlers, sqrt_size=3, nregisters=16):
         '''Initialize a quantum computer with nregisters of size sqrt_size x sqrt_size'''
 
-        self._sqrt_size = sqrt_size 
+        self._sqrt_size = sqrt_size
         self._registers = [QRegister(sqrt_size) for _ in range(nregisters)]
         self._variables = {}
 
@@ -78,12 +80,12 @@ class QComputer(object):
         return info
 
     def get_register_info(self):
-        info = "" 
-        for i, reg in enumerate(self.registers): 
+        info = ""
+        for i, reg in enumerate(self.registers):
             if not reg.is_initialized:
                 reg_info = "R{0}: Not initialized\n".format(i)
             else:
-                reg_info = "R{0}: {1}\n".format(i, str(reg.value))
+                reg_info = "R{0}:\n{1}\n".format(i, str(reg.value))
 
             info += reg_info
         return info
@@ -94,7 +96,7 @@ class QComputer(object):
             info += "Var({0}): {1}".format(k, v)
         return info
 
-    def execute_instruction(self, instruction):
+    def execute(self, instruction):
         for Handler in self._instr_handlers[type(instruction)]:
             handlerinst = Handler(instruction)
             handlerinst.execute(self)
@@ -105,17 +107,8 @@ class QRegister(object):
         self._sqrt_size = sqrt_size
         self._value = None
 
-    def initialize(self, value=None):
-        if value is None:
-            matrix = [[0 for _ in range(self._sqrt_size)] for _ in range(self._sqrt_size)]
-        else:
-            raise NotImplementedError("Can't initialize with a custome value")
-            matrix = []
-
-        self._value = ComplexM(self._sqrt_size, self._sqrt_size, matrix)
-
     @property
-    def is_initialized(self): 
+    def is_initialized(self):
         return self._value is not None
 
     @property
@@ -124,7 +117,38 @@ class QRegister(object):
             raise UnboundLocalError("Can't access the value of a not initialized register")
         return self._value
 
+    @property
+    def sqrt_size(self):
+        return self._sqrt_size
+
+    @property
+    def size(self):
+        return self._sqrt_size ** 2
+
     @value.setter
     def value(self, value):
         self._value = value
+
+    def _get_matrix_from_bitstring(self, bitstring):
+        if not isinstance(bitstring, str):
+            raise TypeError("Initialize expects an string value")
+
+        if len(bitstring) != self.size:
+            raise ValueError("Can't initialize a register of size {0} with a"
+                             " bitstring of size {1}".format(self.size,
+                                                             len(bitstring))
+                             )
+
+        if bitstring.count('0') + bitstring.count('1') != self.size:
+            raise ValueError("A bitstring can only contains 0's and 1's")
+
+        return bitstring_to_matrix(bitstring, self.sqrt_size)
+
+    def initialize(self, value=None):
+        if value is None:
+            matrix = [[0 for _ in range(self._sqrt_size)] for _ in range(self._sqrt_size)]
+        else:
+            matrix = self._get_matrix_from_bitstring(value)
+
+        self.value = ComplexM(self._sqrt_size, self._sqrt_size, matrix)
 

@@ -6,7 +6,7 @@ Created on Nov 28, 2014
 
 from qcomputer import QComputer
 from qinstrhandler import InitializeHandler
-from qinstruction import Initialize
+from qinstruction import Initialize, Register, BitString
 from qmath import ComplexM
 
 
@@ -25,9 +25,8 @@ def get_functional_computer(nregisters=4, sqrt_size=3):
 
     return qcomp
 
-
-def initialize_instruction(register, value=None):
-    instr = Initialize(register, value)
+def initialize_instruction(register_number, value=None):
+    instr = Initialize(Register(register_number), BitString(value))
     return instr
 
 

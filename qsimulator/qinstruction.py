@@ -25,7 +25,7 @@ class Initialize(Instruction):
     def __str__(self):
         string = "Initialize {0}".format(self.register)
         if self.bitstring is not None:
-            string += " with value {0}".format(self.bitstring)
+            string += " with value '{0}'".format(self.bitstring.value)
         return string
 
 

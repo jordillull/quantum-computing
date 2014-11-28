@@ -118,13 +118,15 @@ def p_error(p):
 
 if __name__ == "__main__":
     from qcomputer import QComputer
-    from qinstrhandler import DummyPrintHandler
+    from qinstrhandler import DummyPrintHandler, InitializeHandler
 
     parser = yacc.yacc()
-    print("Quantum Assembler interpreter. Write an instruction.")
-    print("Type CTRL+D to exit.")
+    qcomp = QComputer([DummyPrintHandler, InitializeHandler])
 
-    qcomp = QComputer([DummyPrintHandler])
+    print("Quantum Assembler interpreter. Write an instruction.\n"
+          "Type CTRL+D to exit.\n\n"
+          "{0}".format(qcomp.get_status_info())
+          )
 
     while True:
         try:
@@ -135,14 +137,14 @@ if __name__ == "__main__":
         if not s:
             continue
 
-        # Although 'STATUS' is not a valid instruction we'll use it to display
-        # the quantum computer state 
+        # STATUS is not a valid assembler instruction but we'll use it to
+        # display the quantum computer state
         if s == "STATUS":
             print(qcomp.get_status_info())
             continue
 
         result = parser.parse(s)
         if isinstance(result, (Instruction)):
-            qcomp.execute_instruction(result)
+            qcomp.execute(result)
         else:
             print("  Error: Invalid instruction")
