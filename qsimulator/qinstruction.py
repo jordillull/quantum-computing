@@ -33,9 +33,9 @@ class Initialize(Instruction):
         self._bitstring = bitstring
 
     def __str__(self):
-        string = "Initialize {0}".format(self.register)
+        string = "Initialize R{0}".format(self.register)
         if self.bitstring is not None:
-            string += " with value '{0}'".format(self.bitstring.value)
+            string += " with value '{0}'".format(self.bitstring)
         return string
 
     @property
@@ -51,18 +51,39 @@ class Initialize(Instruction):
 
 
 class Select(Instruction):
-    def __init__(self, variable, register, offset, numqbits):
-        self.variable = variable
-        self.register = register
-        self.offset = offset
-        self.numqbits = numqbits
+    def __init__(self, variable, register, offset, numqubits):
+        self.check_is_instance(variable, Variable)
+        self.check_is_instance(register, Register)
+        self.check_is_instance(offset, Digit)
+        self.check_is_instance(numqubits, Digit)
+
+        self._variable = variable
+        self._register = register
+        self._offset = offset
+        self._numqubits = numqubits
 
     def __str__(self):
-        string = "Select {0} from {1} to {2} into {3}".format(self.register,
+        string = "Select R{0} from {1} to {2} into {3}".format(self.register,
                                                               self.offset,
-                                                              self.numqbits,
+                                                              self.numqubits,
                                                               self.variable)
         return string
+
+    @property
+    def variable(self):
+        return self._variable.name
+
+    @property
+    def register(self):
+        return self._register.number
+
+    @property
+    def offset(self):
+        return self._offset.value
+
+    @property
+    def numqubits(self):
+        return self._numqubits.value
 
 
 class Apply(Instruction):

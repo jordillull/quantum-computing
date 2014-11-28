@@ -66,5 +66,4 @@ class DummyPrintHandler(InstructionHandler):
         @computer: QComputer
         '''
         message = "Executing instruction: '{0}'".format(self.instruction)
-        message += " on a computer with {0} registers of {1} qbits".format(len(computer.registers), computer.size)
         print(message)
