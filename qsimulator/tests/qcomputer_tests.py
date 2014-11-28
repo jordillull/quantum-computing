@@ -48,11 +48,7 @@ class QComputerTest(unittest.TestCase):
 
         cvalue = ComplexM(3, 3, bitstring_to_matrix(value, 3))
 
-        print(type(cvalue))
-        print(cvalue)
-        print(type(qcomp.registers[0].value))
-        print(qcomp.registers[0].value)
-        self.assertEquals(cvalue, qcomp.registers[0].value)
+        self.assertEqual(cvalue, qcomp.registers[0].value)
 
     def testInitializeRegisterWithTooLongBitstringRaisesAnError(self):
         qcomp = get_functional_computer(nregisters=4, sqrt_size=3)

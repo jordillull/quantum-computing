@@ -1,7 +1,7 @@
 all:
 
 test:
-	nosetests3 -v
+	nosetests
 
 test-complex:
 	python3 qsimulator/tests/complex_tests.py --verbose

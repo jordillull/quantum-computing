@@ -13,20 +13,41 @@ from abc import ABCMeta
 
 
 class Instruction(metaclass=ABCMeta):
-    pass
+
+    def check_is_instance(self, obj, expected_type):
+        if not isinstance(obj, expected_type):
+            raise TypeError("Expecting an object of type '{0}'"
+                            "but an object of type '{1}' was found instead"
+                            .format(expected_type, type(obj))
+                            )
 
 
 class Initialize(Instruction):
 
     def __init__(self, register, bitstring=None):
-        self.register = register
-        self.bitstring = bitstring
+        self.check_is_instance(register, Register)
+        if bitstring is not None:
+            self.check_is_instance(bitstring, BitString)
+
+        self._register = register
+        self._bitstring = bitstring
 
     def __str__(self):
         string = "Initialize {0}".format(self.register)
         if self.bitstring is not None:
             string += " with value '{0}'".format(self.bitstring.value)
         return string
+
+    @property
+    def register(self):
+        return self._register.number
+
+    @property
+    def bitstring(self):
+        if self._bitstring is None:
+            return None
+
+        return self._bitstring.value
 
 
 class Select(Instruction):

@@ -47,13 +47,9 @@ class InitializeHandler(InstructionHandler):
         '''
         @computer: QComputer
         '''
-        ri = self.instruction.register
-        if self.instruction.bitstring:
-            val = self.instruction.bitstring.value
-        else:
-            val = None
 
-        computer.registers[ri.number].initialize(val)
+        register = computer.registers[self.instruction.register]
+        register.initialize(self.instruction.bitstring)
 
 
 class DummyPrintHandler(InstructionHandler):
