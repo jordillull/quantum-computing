@@ -5,7 +5,7 @@ Created on Nov 28, 2014
 '''
 
 from qcomputer import QComputer
-from qinstrhandler import InitializeHandler
+from qinstrhandler import InitializeHandler, SelectHandler
 from qmath import ComplexM
 from qinstruction import Initialize, \
                          Select
@@ -23,7 +23,7 @@ def get_dummy_computer(nregisters=4, sqrt_size=3):
 
 
 def get_functional_computer(nregisters=4, sqrt_size=3):
-    handlers = [InitializeHandler]
+    handlers = [InitializeHandler, SelectHandler]
     qcomp = QComputer(handlers=handlers,
                       sqrt_size=sqrt_size,
                       nregisters=nregisters

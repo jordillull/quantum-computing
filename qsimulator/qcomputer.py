@@ -8,12 +8,16 @@ Quantum Computer simulator
 from qmath import ComplexM
 from qinstrhandler import DummyPrintHandler
 from qinstruction import Instruction, Select, Initialize, Apply, Concat, \
-                         Measure, Tensor, Inverse
+                         Measure, Tensor, Inverse, Variable
 
 from utils import bitstring_to_matrix
 
 
 class InstructionHandlerRegisterError(Exception):
+    pass
+
+
+class UnableToExecuteInstructionError(Exception):
     pass
 
 
@@ -47,6 +51,9 @@ class QComputer(object):
     @property
     def variables(self):
         return self._variables
+
+    def set_variable(self, var_name, value):
+        self._variables[var_name] = QVariable(value)
 
     def register_handler(self, handler):
         '''
@@ -97,6 +104,12 @@ class QComputer(object):
         return info
 
     def execute(self, instruction):
+        if type(instruction) not in self._instr_handlers.keys():
+            errmsg = ("No Instruction handlers were found for {0} instruction"
+                      .format(type(instruction))
+                      )
+            raise UnableToExecuteInstructionError(errmsg)
+
         for Handler in self._instr_handlers[type(instruction)]:
             handlerinst = Handler(instruction)
             handlerinst.execute(self)
@@ -106,6 +119,19 @@ class QRegister(object):
     def __init__(self, sqrt_size=3):
         self._sqrt_size = sqrt_size
         self._value = None
+
+    # We are storing quantum registers values as Complex Matrices of size
+    # sqrt_size × sqrt_size but it is convenient to also allow accessing them
+    # as a list
+    def __getitem__(self, i):
+        return self._value_as_list[i]
+
+    @property
+    def _value_as_list(self):
+        l = []
+        for i in range(self.sqrt_size):
+            l += self.value[i]
+        return l
 
     @property
     def is_initialized(self):

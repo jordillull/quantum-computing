@@ -79,7 +79,7 @@ class QComputerTest(unittest.TestCase):
     def testSelectFromNotInitializedRegistersRaisesAnError(self):
         qcomp = get_functional_computer(nregisters=4, sqrt_size=3)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(UnboundLocalError):
             qcomp.execute(instr_select('V1', 0, 1, 2))
 
     def testSelectOutOfBoundsRaiseAnError(self):

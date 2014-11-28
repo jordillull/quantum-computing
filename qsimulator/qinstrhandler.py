@@ -51,6 +51,32 @@ class InitializeHandler(InstructionHandler):
         register = computer.registers[self.instruction.register]
         register.initialize(self.instruction.bitstring)
 
+class SelectHandler(InstructionHandler):
+
+    @classmethod
+    def get_handled_instructions(cls):
+        '''
+        @return: A tuple of handled instructions
+        '''
+        return (Select,)
+
+    def execute(self, computer):
+        '''
+        @computer: QComputer
+        '''
+        register = computer.registers[self.instruction.register]
+        start = self.instruction.offset
+        stop = self.instruction.numqubits + start
+
+        if start > register.size or stop > register.size:
+            raise IndexError("Unable to select from element {0} to element {1}".format(start, stop))
+
+        value = register[start:stop]
+
+        variable = self.instruction.variable
+
+        computer.set_variable(variable, value)
+
 
 class DummyPrintHandler(InstructionHandler):
 
