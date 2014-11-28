@@ -117,13 +117,18 @@ def p_error(p):
 
 
 if __name__ == "__main__":
+    import sys
     from qcomputer import QComputer
     from qinstrhandler import DummyPrintHandler, InitializeHandler
 
     parser = yacc.yacc()
     qcomp = QComputer([DummyPrintHandler, InitializeHandler])
 
-    print("Quantum Assembler interpreter. Write an instruction.\n"
+    print("\n\n"
+          "Quantum Assembler shell. "
+          "Type any instruction or write STATUS to view the current status"
+          " of the computer"
+          "\n"
           "Type CTRL+D to exit.\n\n"
           "{0}".format(qcomp.get_status_info())
           )
@@ -145,6 +150,9 @@ if __name__ == "__main__":
 
         result = parser.parse(s)
         if isinstance(result, (Instruction)):
-            qcomp.execute(result)
+            try:
+                qcomp.execute(result)
+            except Exception as e:
+                print('  Error executing instruction: "{0}"'.format(e))
         else:
-            print("  Error: Invalid instruction")
+            print("  Invalid instruction")
