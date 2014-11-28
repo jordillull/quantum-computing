@@ -51,16 +51,16 @@ class Initialize(Instruction):
 
 
 class Select(Instruction):
-    def __init__(self, variable, register, offset, limit):
+    def __init__(self, variable, register, offset, numqbits):
         self.variable = variable
         self.register = register
         self.offset = offset
-        self.limit = limit
+        self.numqbits = numqbits
 
     def __str__(self):
         string = "Select {0} from {1} to {2} into {3}".format(self.register,
                                                               self.offset,
-                                                              self.limit,
+                                                              self.numqbits,
                                                               self.variable)
         return string
 

@@ -48,6 +48,5 @@ def instr_select(var_name, reg_num, offset, numqbits):
                    Digit(offset),
                    Digit(numqbits)
                    )
-    
-    return instr
 
+    return instr

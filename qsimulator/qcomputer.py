@@ -152,3 +152,14 @@ class QRegister(object):
 
         self.value = ComplexM(self._sqrt_size, self._sqrt_size, matrix)
 
+class QVariable(object):
+    def __init__(self, value):
+        self._value = value
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
