@@ -7,6 +7,7 @@ Quantum Computer simulator
 
 from qinstruction import Instruction, Select, Initialize, Apply, Concat, \
                          Measure, Tensor, Inverse
+from qmath import ComplexM
 from abc import ABCMeta, abstractmethod
 
 
@@ -71,7 +72,8 @@ class SelectHandler(InstructionHandler):
         if start > register.size or stop > register.size:
             raise IndexError("Unable to select from element {0} to element {1}".format(start, stop))
 
-        value = register[start:stop]
+        # The result of the select is saved as a complex vector
+        value = ComplexM(1, stop - start, [register[start:stop]])
 
         variable = self.instruction.variable
 
