@@ -100,7 +100,7 @@ class QComputer(object):
     def get_variables_info(self):
         info = ""
         for k, v in self.variables.items():
-            info += "Var({0}): {1}".format(k, v)
+            info += "{0}:\n{1}".format(k, v.value)
         return info
 
     def execute(self, instruction):

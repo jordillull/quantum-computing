@@ -10,7 +10,6 @@ from qlex import tokens
 from qinstruction import Instruction, Select, Initialize, Apply, Concat, \
                          Measure, Tensor, Inverse
 from qinstruction import Variable, BitString, Digit, Register, CNot, H, Identity
-from qsimulator import qinstruction
 
 def p_instruction(p):
     '''instruction : op_initialize
@@ -117,12 +116,13 @@ def p_error(p):
 
 
 if __name__ == "__main__":
-    import sys
     from qcomputer import QComputer
-    from qinstrhandler import DummyPrintHandler, InitializeHandler
+    from qinstrhandler import DummyPrintHandler, \
+                              InitializeHandler, \
+                              SelectHandler
 
     parser = yacc.yacc()
-    qcomp = QComputer([DummyPrintHandler, InitializeHandler])
+    qcomp = QComputer([DummyPrintHandler, InitializeHandler, SelectHandler])
 
     print("\n\n"
           "Quantum Assembler shell. "
