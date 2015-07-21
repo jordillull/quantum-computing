@@ -308,7 +308,7 @@ class ComplexM(object):
         # We are using the formal definition of Tensor here. I.e:
         #     Being size of B m×n
         #     (A ⊗ B)[i, j] = A[i/m, j/n] * B[i % m, j % n]
-        tensorFnx = lambda i, j: self[i // m][i // n] * other[i % m][j % n]
+        tensorFnx = lambda i, j: self[i // m][j // n] * other[i % m][j % n]
         tensor_size = (sm * m, sn * n)
         tensor_matrix = [[tensorFnx(i, j) for j in range(tensor_size[1])] for i in range(tensor_size[0])]
 
